@@ -6,7 +6,7 @@ from urllib.parse import urlencode, quote
 from html import unescape
 from lxml import html
 from searx.exceptions import SearxEngineCaptchaException
-from searx.utils import humanize_bytes, eval_xpath, eval_xpath_list, extract_text, extr
+from searx.utils import humanize_bytes, eval_xpath, extract_text, extr
 
 
 # Engine metadata
@@ -22,7 +22,6 @@ about = {
 # Engine configuration
 categories = ['general', 'web']
 paging = False
-safesearch = True
 search_type = ""
 
 # Search URL
@@ -54,6 +53,47 @@ etools_results_xpath = '//table[@class="result"]//td[@class="record"]'
 etools_url_xpath = './a/@href'
 etools_title_xpath = './a//text()'
 etools_content_xpath = './/div[@class="text"]//text()'
+etools_cookie = "-".join(
+    [
+        'VER_3.3',
+        'autocomplete_true',
+        'country_web',
+        'customerId_',
+        'dataSourceResults_20',
+        'dataSources_mySettings',
+        'excludeQuery_',
+        'language_all',
+        'markKeyword_false',
+        'openNewWindow_true',
+        'pageResults_20',
+        'queryAutoFocus_true',
+        "_".join(
+            [
+                'rankCalibration',
+                '%28Base',
+                '0%29%28Bing',
+                '0%29%28Brave',
+                '0%29%28DuckDuckGo',
+                '0%29%28Google',
+                '0%29%28Lilo',
+                '0%29%28Mojeek',
+                '0%29%28Qwant',
+                '0%29%28Search',
+                '0%29%28Tiger',
+                '0%29%28Wikipedia',
+                '0%29%28Yahoo',
+                '0%29%28Yandex',
+                '4%29',
+            ]
+        ),
+        'redirectLinks_false',
+        'safeSearch_false',
+        'showAdvertisement_true',
+        'showSearchStatus_true',
+        'timeout_4000',
+        'usePost_false',
+    ]
+)
 
 
 def catch_bad_response(resp):
@@ -92,19 +132,19 @@ def etools_request(query, params):
         safesearch = 'false'
 
     # Settings set to only allow Yandex, and some other stuff
-    params['cookies']['searchSettings'] = 'VER_3.3-autocomplete_true-country_web-customerId_-dataSourceResults_20-dataSources_mySettings-excludeQuery_-language_all-markKeyword_false-openNewWindow_true-pageResults_20-queryAutoFocus_true-rankCalibration_%28Base_0%29%28Bing_0%29%28Brave_0%29%28DuckDuckGo_0%29%28Google_0%29%28Lilo_0%29%28Mojeek_0%29%28Qwant_0%29%28Search_0%29%28Tiger_0%29%28Wikipedia_0%29%28Yahoo_0%29%28Yandex_4%29-redirectLinks_false-safeSearch_false-showAdvertisement_true-showSearchStatus_true-timeout_4000-usePost_false'
+    params['cookies']['searchSettings'] = etools_cookie
+
     params['url'] = etools_url_web + etools_search_path.format(search_term=quote(query), safesearch=safesearch)
 
     return params
 
 
 def request(query, params):
-    if search_type == 'web':
-        if etools_proxy:
-            return etools_request(query, params)
-        else:
-            return yandex_request(query, params)
-    elif search_type == 'images':
+    if search_type == 'web' and etools_proxy:
+        return etools_request(query, params)
+    if search_type == 'web' and not etools_proxy:
+        return yandex_request(query, params)
+    if search_type == 'images':
         return yandex_request_images(query, params)
 
     return params
@@ -197,10 +237,8 @@ def response(resp):
     if search_type == 'web':
         if etools_proxy:
             return etools_response(resp)
-        else:
-            return yandex_response(resp)
+        return yandex_response(resp)
     if search_type == 'images':
         return yandex_response_images(resp)
-
 
     return []
