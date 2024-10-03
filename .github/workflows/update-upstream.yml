@@ -27,8 +27,8 @@ jobs:
       run: git fetch upstream
 
     - name: Merge upstream changes
-      run: git merge upstream/main
+      run: git merge upstream/master
 
     - name: Push changes
       if: success()
-      run: git push origin main
+      run: git push origin master
