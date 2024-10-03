@@ -1,19 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""MySQL is said to be the most popular open source database.  Before enabling
-MySQL engine, you must install the package ``mysql-connector-python``.
+"""MariaDB is a community driven fork of MySQL. Before enabling MariaDB engine,
+you must the install the pip package ``mariadb`` along with the necessary
+prerequities.
 
-The authentication plugin is configurable by setting ``auth_plugin`` in the
-attributes.  By default it is set to ``caching_sha2_password``.
+`See the following documentation for more details
+<https://mariadb.com/docs/server/connect/programming-languages/c/install/>`_
 
 Example
 =======
 
-This is an example configuration for querying a MySQL server:
+This is an example configuration for querying a MariaDB server:
 
 .. code:: yaml
 
    - name: my_database
-     engine: mysql_server
+     engine: mariadb_server
      database: my_database
      username: searxng
      password: password
@@ -25,15 +26,22 @@ Implementations
 
 """
 
+from typing import TYPE_CHECKING
+
 try:
-    import mysql.connector  # type: ignore
+    import mariadb
 except ImportError:
     # import error is ignored because the admin has to install mysql manually to use
     # the engine
     pass
 
+if TYPE_CHECKING:
+    import logging
+
+    logger = logging.getLogger()
+
+
 engine_type = 'offline'
-auth_plugin = 'caching_sha2_password'
 
 host = "127.0.0.1"
 """Hostname of the DB connector"""
@@ -68,31 +76,20 @@ def init(engine_settings):
     if not engine_settings['query_str'].lower().startswith('select '):
         raise ValueError('only SELECT query is supported')
 
-    _connection = mysql.connector.connect(
-        database=database,
-        user=username,
-        password=password,
-        host=host,
-        port=port,
-        auth_plugin=auth_plugin,
-    )
+    _connection = mariadb.connect(database=database, user=username, password=password, host=host, port=port)
 
 
 def search(query, params):
     query_params = {'query': query}
     query_to_run = query_str + ' LIMIT {0} OFFSET {1}'.format(limit, (params['pageno'] - 1) * limit)
+    logger.debug("SQL Query: %s", query_to_run)
 
     with _connection.cursor() as cur:
         cur.execute(query_to_run, query_params)
-
-        return _fetch_results(cur)
-
-
-def _fetch_results(cur):
-    results = []
-    for res in cur:
-        result = dict(zip(cur.column_names, map(str, res)))
-        result['template'] = result_template
-        results.append(result)
-
-    return results
+        results = []
+        col_names = [i[0] for i in cur.description]
+        for res in cur:
+            result = dict(zip(col_names, map(str, res)))
+            result['template'] = result_template
+            results.append(result)
+        return results
