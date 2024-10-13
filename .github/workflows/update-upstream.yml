@@ -33,7 +33,16 @@ jobs:
     - id: mergeUpstream
       name: Merge upstream changes
       # If the merging fails, we check if there is ONLY a conflict in the static css, and preceed if so
-      run: git merge upstream/master || ( ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && make themes && ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/ && git add searx/static/themes/simple/css/ && git commit -m "Compiled static" )
+      run: git merge upstream/master || ( ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_ENV )
+
+    - id: compileTheme
+      name: Compile CSS theme
+      if: env.css_conflict == 'true'
+      run: |
+        make themes
+        ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/
+        git add searx/static/themes/simple/css/
+        git commit -m "Compiled static" 
 
     - id: pushChanges
       name: Push changes
