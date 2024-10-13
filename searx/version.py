@@ -13,6 +13,7 @@ VERSION_STRING = "1.0.0"
 VERSION_TAG = "1.0.0"
 GIT_URL = "unknow"
 GIT_BRANCH = "unknow"
+TOR_URL = "http://kantanrucloofzrfn7vqlsxbhipkqv55qygn4oxogbnjpfex54bw4gad.onion"
 
 logger = logging.getLogger("searx")
 
