@@ -32,12 +32,18 @@ jobs:
 
     - id: mergeUpstream
       name: Merge upstream changes
-      # If the merging fails, we check if there is ONLY a conflict in the static css, and preceed if so
-      run: git merge upstream/master || ( ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_ENV )
+      run: git merge upstream/master
+      continue-on-error: true
+
+    - id: checkConflicts
+      name: Check for merge conflicts
+      if: steps.mergeUpstream.conclusion == 'failure'
+      # Check if there is ONLY a conflict in the static css, and preceed if so
+      run: ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_OUTPUT
 
     - id: compileTheme
       name: Compile CSS theme
-      if: env.css_conflict == 'true'
+      if: steps.checkConflicts.outputs.css_conflict  == 'true'
       run: |
         make themes
         ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/
