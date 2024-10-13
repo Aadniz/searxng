@@ -53,5 +53,5 @@ jobs:
 
     - id: pushChanges
       name: Push changes
-      if: success()
+      if: steps.mergeUpstream.conclusion == 'success' || steps.compileTheme.conclusion == 'success'
       run: git push origin master
