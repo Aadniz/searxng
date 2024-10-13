@@ -10,25 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - id: checkoutRepo
+      name: Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Configure git
+    - id: confGit
+      name: Configure git
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-    - name: Add upstream remote
+    - id: addUpstream
+      name: Add upstream remote
       run: git remote add upstream https://github.com/searxng/searxng.git
 
-    - name: Fetch upstream changes
+    - id: fetchUpstream
+      name: Fetch upstream changes
       run: git fetch upstream
 
-    - name: Merge upstream changes
-      run: git merge upstream/master
+    - id: mergeUpstream
+      name: Merge upstream changes
+      # If the merging fails, we check if there is ONLY a conflict in the static css, and preceed if so
+      run: git merge upstream/master || ( ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && make themes && ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/ && git add searx/static/themes/simple/css/ && git commit -m "Compiled static" )
 
-    - name: Push changes
+    - id: pushChanges
+      name: Push changes
       if: success()
       run: git push origin master
