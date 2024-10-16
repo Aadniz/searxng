@@ -32,12 +32,11 @@ jobs:
 
     - id: mergeUpstream
       name: Merge upstream changes
-      run: git merge upstream/master
-      continue-on-error: true
+      run: git merge upstream/master || echo "merge_failed=true" >> $GITHUB_OUTPUT
 
     - id: checkConflicts
       name: Check for merge conflicts
-      if: steps.mergeUpstream.conclusion == 'failure'
+      if: steps.checkConflicts.outputs.merge_failed  == 'true'
       # Check if there is ONLY a conflict in the static css, and preceed if so
       run: |
         ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_OUTPUT
@@ -53,5 +52,4 @@ jobs:
 
     - id: pushChanges
       name: Push changes
-      if: steps.mergeUpstream.conclusion == 'success' || steps.compileTheme.conclusion == 'success'
       run: git push origin master
