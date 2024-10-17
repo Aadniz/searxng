@@ -39,7 +39,7 @@ jobs:
       if: steps.mergeUpstream.outputs.merge_failed  == 'true'
       # Check if there is ONLY a conflict in the static css, and preceed if so
       run: |
-        ! git status | grep "both modified" | grep -q -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_OUTPUT
+        ! git status | grep "both modified" | grep -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_OUTPUT
 
     - id: compileTheme
       name: Compile CSS theme
