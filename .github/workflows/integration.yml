@@ -13,10 +13,6 @@ jobs:
   python:
     name: Python ${{ matrix.python-version }}
     runs-on: 'self-hosted'  # Ran out of hours :P
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-        python-version:  ["3.11.2",]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
