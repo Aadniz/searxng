@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Ubuntu packages
+      - name: Install packages
         run: |
           sudo ./utils/searxng.sh install packages
 

@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Install Ubuntu packages
+    - name: Install packages
       run: |
         sudo ./utils/searxng.sh install packages
         sudo apt install firefox-esr
@@ -53,7 +53,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Install Ubuntu packages
+    - name: Install packages
       run: sudo ./utils/searxng.sh install buildhost
     - name: Set up Python
       run: sudo apt install python3
@@ -82,7 +82,7 @@ jobs:
       with:
         fetch-depth: '0'
         persist-credentials: false
-    - name: Install Ubuntu packages
+    - name: Install packages
       run: sudo ./utils/searxng.sh install buildhost
     - name: Set up Python
       run: sudo apt install python3
