@@ -20,17 +20,17 @@
 from __future__ import annotations
 from typing import Literal
 
+import os
 import abc
 import dataclasses
 import hashlib
 import logging
-import pathlib
 import sqlite3
 import tempfile
 import time
 import typer
 
-from pydantic import BaseModel
+import msgspec
 
 from searx import sqlitedb
 from searx import logger
@@ -90,7 +90,7 @@ def init(cfg: "FaviconCacheConfig"):
         raise NotImplementedError(f"favicons db_type '{cfg.db_type}' is unknown")
 
 
-class FaviconCacheConfig(BaseModel):
+class FaviconCacheConfig(msgspec.Struct):  # pylint: disable=too-few-public-methods
     """Configuration of the favicon cache."""
 
     db_type: Literal["sqlite", "mem"] = "sqlite"
@@ -103,7 +103,7 @@ class FaviconCacheConfig(BaseModel):
       :py:obj:`.cache.FaviconCacheMEM` (not recommended)
     """
 
-    db_url: pathlib.Path = pathlib.Path(tempfile.gettempdir()) / "faviconcache.db"
+    db_url: str = tempfile.gettempdir() + os.sep + "faviconcache.db"
     """URL of the SQLite DB, the path to the database file."""
 
     HOLD_TIME: int = 60 * 60 * 24 * 30  # 30 days
