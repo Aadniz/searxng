@@ -7,7 +7,7 @@ on:
 jobs:
   updateData:
     name: Update data - ${{ matrix.fetch }}
-    runs-on: ubuntu-24.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     if: ${{ github.repository_owner == 'searxng'}}
     strategy:
       fail-fast: false

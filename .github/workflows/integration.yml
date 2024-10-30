@@ -12,7 +12,7 @@ permissions:
 jobs:
   python:
     name: Python ${{ matrix.python-version }}
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     strategy:
       matrix:
         os: [ubuntu-20.04]
@@ -56,7 +56,7 @@ jobs:
 
   themes:
     name: Themes
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -83,7 +83,7 @@ jobs:
 
   documentation:
     name: Documentation
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     permissions:
       contents: write  # for JamesIves/github-pages-deploy-action to push changes in repo
     steps:
@@ -124,7 +124,7 @@ jobs:
 
   babel:
     name: Update translations branch
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     if: ${{ github.repository_owner == 'searxng' && github.ref == 'refs/heads/master' }}
     needs:
       - python
@@ -174,7 +174,7 @@ jobs:
       - documentation
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     steps:
       - name: Checkout
         if: env.DOCKERHUB_USERNAME != null

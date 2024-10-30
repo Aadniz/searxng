@@ -7,7 +7,7 @@ on:
 jobs:
   babel:
     name: "create PR for additions from weblate"
-    runs-on: ubuntu-20.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     if: ${{ github.repository_owner == 'searxng' && github.ref == 'refs/heads/master' }}
     steps:
     - name: Checkout
