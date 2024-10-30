@@ -23,7 +23,7 @@ jobs:
     - name: Install Ubuntu packages
       run: |
         sudo ./utils/searxng.sh install packages
-        sudo apt install firefox
+        sudo apt install firefox-esr
     - name: Set up Python
       uses: actions/setup-python@v5
       with:

@@ -62,7 +62,7 @@ uwsgi uwsgi-plugin-python3
 git build-essential libxslt-dev zlib1g-dev libffi-dev libssl-dev"
 
 SEARXNG_BUILD_PACKAGES_debian="\
-firefox graphviz imagemagick texlive-xetex librsvg2-bin
+firefox-esr graphviz imagemagick texlive-xetex librsvg2-bin
 texlive-latex-recommended texlive-extra-utils fonts-dejavu
 latexmk shellcheck"
 
