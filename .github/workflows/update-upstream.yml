@@ -22,8 +22,13 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+    - id: checkUpstream
+      name: Check if remote upstream is already added
+      run: git remote -v | grep -q upstresam || echo "upstream_exists=false" >> $GITHUB_OUTPUT
+
     - id: addUpstream
       name: Add upstream remote
+      if: steps.checkUpstream.outputs.upstream_exists  == 'false'
       run: git remote add upstream https://github.com/searxng/searxng.git
 
     - id: fetchUpstream
