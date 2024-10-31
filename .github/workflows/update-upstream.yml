@@ -24,11 +24,11 @@ jobs:
 
     - id: checkUpstream
       name: Check if remote upstream is already added
-      run: git remote -v | grep -q upstresam || echo "upstream_exists=false" >> $GITHUB_OUTPUT
+      run: git remote -v | grep -q upstresam || echo "upstream_missing=true" >> $GITHUB_OUTPUT
 
     - id: addUpstream
       name: Add upstream remote
-      if: steps.checkUpstream.outputs.upstream_exists  == 'false'
+      if: steps.checkUpstream.outputs.upstream_missing  == 'true'
       run: git remote add upstream https://github.com/searxng/searxng.git
 
     - id: fetchUpstream
