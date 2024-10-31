@@ -24,7 +24,7 @@ jobs:
 
     - id: checkUpstream
       name: Check if remote upstream is already added
-      run: git remote -v | grep -q upstresam || echo "upstream_missing=true" >> $GITHUB_OUTPUT
+      run: git remote -v | grep -q upstream || echo "upstream_missing=true" >> $GITHUB_OUTPUT
 
     - id: addUpstream
       name: Add upstream remote
