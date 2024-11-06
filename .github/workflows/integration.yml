@@ -91,7 +91,7 @@ jobs:
         run: |
           make V=1 docs.clean docs.html
       - name: Deploy
-        if:  github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ github.token }}

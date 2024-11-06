@@ -1,6 +1,6 @@
 name: Auto Merge Fork
 
-on:
+on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
@@ -10,51 +10,52 @@ jobs:
     runs-on: 'self-hosted'  # Ran out of hours :P
 
     steps:
-    - id: checkoutRepo
-      name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - id: checkoutRepo
+        name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - id: confGit
-      name: Configure git
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - id: confGit
+        name: Configure git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-    - id: checkUpstream
-      name: Check if remote upstream is already added
-      run: git remote -v | grep -q upstream || echo "upstream_missing=true" >> $GITHUB_OUTPUT
+      - id: checkUpstream
+        name: Check if remote upstream is already added
+        run: git remote -v | grep -q upstream || echo "upstream_missing=true" >> $GITHUB_OUTPUT
 
-    - id: addUpstream
-      name: Add upstream remote
-      if: steps.checkUpstream.outputs.upstream_missing  == 'true'
-      run: git remote add upstream https://github.com/searxng/searxng.git
+      - id: addUpstream
+        name: Add upstream remote
+        if: steps.checkUpstream.outputs.upstream_missing  == 'true'
+        run: git remote add upstream https://github.com/searxng/searxng.git
 
-    - id: fetchUpstream
-      name: Fetch upstream changes
-      run: git fetch upstream
+      - id: fetchUpstream
+        name: Fetch upstream changes
+        run: git fetch upstream
 
-    - id: mergeUpstream
-      name: Merge upstream changes
-      run: git merge upstream/master || echo "merge_failed=true" >> $GITHUB_OUTPUT
+      - id: mergeUpstream
+        name: Merge upstream changes
+        run: git merge upstream/master || echo "merge_failed=true" >> $GITHUB_OUTPUT
 
-    - id: checkConflicts
-      name: Check for merge conflicts
-      if: steps.mergeUpstream.outputs.merge_failed  == 'true'
-      # Check if there is ONLY a conflict in the static css, and preceed if so
-      run: |
-        ! git status | grep "both modified" | grep -v "searx/static/themes/simple/css" && echo "css_conflict=true" >> $GITHUB_OUTPUT
+      - id: checkConflicts
+        name: Check for merge conflicts
+        if: steps.mergeUpstream.outputs.merge_failed  == 'true'
+        # Check if there is ONLY a conflict in the static css, and preceed if so
+        run: |
+          ! git status | grep "both modified" | grep -v "searx/static/themes/simple/css"
+          echo "css_conflict=true" >> $GITHUB_OUTPUT
 
-    - id: compileTheme
-      name: Compile CSS theme
-      if: steps.checkConflicts.outputs.css_conflict  == 'true'
-      run: |
-        make themes
-        ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/
-        git add searx/static/themes/simple/css/
-        git commit -m "Compiled static" 
+      - id: compileTheme
+        name: Compile CSS theme
+        if: steps.checkConflicts.outputs.css_conflict  == 'true'
+        run: |
+          make themes
+          ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/
+          git add searx/static/themes/simple/css/
+          git commit -m "Compiled static"
 
-    - id: pushChanges
-      name: Push changes
-      run: git push origin master
+      - id: pushChanges
+        name: Push changes
+        run: git push origin master
