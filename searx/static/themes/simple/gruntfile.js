@@ -21,9 +21,10 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       scripts: {
-        files: ['gruntfile.js', 'src/**'],
+        files: ['gruntfile.js', 'eslint.config.mjs', '.stylelintrc.json', 'src/**'],
         tasks: [
           'eslint',
+	  'stylelint',
           'copy',
           'uglify',
           'less',
@@ -35,7 +36,7 @@ module.exports = function (grunt) {
     },
     eslint: {
       options: {
-        overrideConfigFile: '.eslintrc.json',
+        overrideConfigFile: 'eslint.config.mjs',
         failOnError: true,
         fix: grunt.option('fix')
       },
@@ -49,6 +50,7 @@ module.exports = function (grunt) {
     stylelint: {
       options: {
         formatter: 'unix',
+        fix: grunt.option('fix')
       },
       src: [
         'src/less/**/*.less',
@@ -298,7 +300,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-stylelint');
   grunt.loadNpmTasks('grunt-eslint');
 
-  grunt.registerTask('test', ['eslint']);
+  grunt.registerTask('test', ['eslint', 'stylelint']);
 
   grunt.registerTask('default', [
     'eslint',
