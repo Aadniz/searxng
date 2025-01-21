@@ -24,7 +24,7 @@ module.exports = function (grunt) {
         files: ['gruntfile.js', 'eslint.config.mjs', '.stylelintrc.json', 'src/**'],
         tasks: [
           'eslint',
-	  'stylelint',
+          'stylelint',
           'copy',
           'uglify',
           'less',
@@ -109,7 +109,8 @@ module.exports = function (grunt) {
           'js/searxng.head.min.js': ['src/js/head/*.js'],
           'js/searxng.min.js': [
             'src/js/main/*.js',
-            './node_modules/autocomplete-js/dist/autocomplete.js'
+            './node_modules/autocomplete-js/dist/autocomplete.js',
+            './node_modules/swiped-events/src/swiped-events.js'
           ]
         }
       }
@@ -118,9 +119,6 @@ module.exports = function (grunt) {
       production: {
         options: {
           paths: ["less"],
-          plugins: [
-            new (require('less-plugin-clean-css'))()
-          ],
           sourceMap: true,
           sourceMapURL: (name) => { const s = name.split('/'); return s[s.length - 1] + '.map'; },
           outputSourceFiles: true,

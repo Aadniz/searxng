@@ -1072,6 +1072,11 @@ engines:
     timeout: 3.0
     disabled: true
 
+  - name: ipernity
+    engine: ipernity
+    shortcut: ip
+    disabled: true
+
   - name: jisho
     engine: jisho
     shortcut: js
@@ -1541,6 +1546,10 @@ engines:
       use_official_api: false
       require_api_key: false
       results: HTML
+
+  - name: Public Domain Image Archive
+    engine: public_domain_image_archive
+    shortcut: pdia
 
   - name: pubmed
     engine: pubmed
