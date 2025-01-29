@@ -110,6 +110,28 @@ class Result(msgspec.Struct, kw_only=True):
 
         return iter(self.__struct_fields__)
 
+    def as_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__}
+
+
+class MainResult(Result):  # pylint: disable=missing-class-docstring
+
+    # open_group and close_group should not manged in the Result class (we should rop it from here!)
+    open_group: bool = False
+    close_group: bool = False
+
+    title: str = ""
+    """Link title of the result item."""
+
+    content: str = ""
+    """Extract or description of the result item"""
+
+    img_src: str = ""
+    """URL of a image that is displayed in the result item."""
+
+    thumbnail: str = ""
+    """URL of a thumbnail that is displayed in the result item."""
+
 
 class LegacyResult(dict):
     """A wrapper around a legacy result item.  The SearXNG core uses this class
@@ -130,10 +152,12 @@ class LegacyResult(dict):
     UNSET = object()
     WHITESPACE_REGEX = re.compile('( |\t|\n)+', re.M | re.U)
 
+    def as_dict(self):
+        return self
+
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        self.__dict__ = self
 
         # Init fields with defaults / compare with defaults of the fields in class Result
         self.engine = self.get("engine", "")
