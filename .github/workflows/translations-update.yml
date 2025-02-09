@@ -25,7 +25,7 @@ jobs:
             ./local
             ./.nvm
             ./node_modules
-          key: python-ubuntu-20.04-3.12-${{ hashFiles('requirements*.txt', 'setup.py','.nvmrc', 'package.json') }}
+          key: python-ubuntu-24.04-3.12-${{ hashFiles('requirements*.txt', 'setup.py','.nvmrc', 'package.json') }}
       - name: weblate & git setup
         env:
           WEBLATE_CONFIG: ${{ secrets.WEBLATE_CONFIG }}
