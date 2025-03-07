@@ -12,12 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install packages
+      - name: Install Ubuntu packages
         run: |
           sudo ./utils/searxng.sh install packages
 
       - name: Set up Python
-        run: sudo apt install python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: 'x64'
 
       - name: Install Python dependencies
         run: |

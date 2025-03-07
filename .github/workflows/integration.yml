@@ -13,14 +13,21 @@ jobs:
   python:
     name: Python ${{ matrix.python-version }}
     runs-on: 'self-hosted'  # Ran out of hours :P
+    strategy:
+      matrix:
+        os: ['self-hosted']
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install packages
+      - name: Install Ubuntu packages
         run: |
           sudo ./utils/searxng.sh install packages
       - name: Set up Python
-        run: sudo apt install python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
       - name: Run tests
         run: make V=1 ci.test
 
@@ -51,10 +58,13 @@ jobs:
         with:
           fetch-depth: '0'
           persist-credentials: false
-      - name: Install packages
+      - name: Install Ubuntu packages
         run: sudo ./utils/searxng.sh install buildhost
       - name: Set up Python
-        run: sudo apt install python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
       - name: Cache Python dependencies
         id: cache-python
         uses: actions/cache@v4
@@ -95,7 +105,10 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.WEBLATE_GITHUB_TOKEN }}
       - name: Set up Python
-        run: sudo apt install python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
       - name: Cache Python dependencies
         id: cache-python
         uses: actions/cache@v4
@@ -136,7 +149,10 @@ jobs:
           # make sure "make docker.push" can get the git history
           fetch-depth: '0'
       - name: Set up Python
-        run: sudo apt install python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
       - name: Cache Python dependencies
         id: cache-python
         uses: actions/cache@v4

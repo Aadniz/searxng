@@ -8,8 +8,13 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   merge:
     runs-on: 'self-hosted'  # Ran out of hours :P
-
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Ubuntu packages
+        run: |
+          sudo ./utils/searxng.sh install packages
+
       - id: checkoutRepo
         name: Checkout repository
         uses: actions/checkout@v4
