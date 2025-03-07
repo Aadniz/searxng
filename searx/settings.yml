@@ -352,6 +352,11 @@ engines:
     shortcut: 9g
     disabled: true
 
+  - name: acfun
+    engine: acfun
+    shortcut: acf
+    disabled: true
+
   - name: adobe stock
     engine: adobe_stock
     shortcut: asi
@@ -496,6 +501,11 @@ engines:
     shortcut: bc
     categories: music
 
+  - name: baidu
+    engine: baidu
+    shortcut: baidu
+    disabled: false
+
   - name: wikipedia
     engine: wikipedia
     shortcut: wp
@@ -572,6 +582,24 @@ engines:
     shortcut: chef
     # to show premium or plus results too:
     # skip_premium: false
+
+  - name: chinaso news
+    chinaso_category: news
+    engine: chinaso
+    shortcut: chinaso
+    disabled: true
+
+  - name: chinaso images
+    chinaso_category: images
+    engine: chinaso
+    shortcut: chinasoi
+    disabled: true
+
+  - name: chinaso videos
+    chinaso_category: videos
+    engine: chinaso
+    shortcut: chinasov
+    disabled: true
 
   - name: cloudflareai
     engine: cloudflareai
@@ -1098,6 +1126,11 @@ engines:
   - name: ipernity
     engine: ipernity
     shortcut: ip
+    disabled: true
+
+  - name: iqiyi
+    engine: iqiyi
+    shortcut: iq
     disabled: true
 
   - name: jisho
