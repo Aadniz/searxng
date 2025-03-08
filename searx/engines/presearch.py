@@ -166,8 +166,13 @@ def _fix_title(title, url):
     title = html_to_text(title)
     # Fixes issue where domain would show up in the title
     # translate.google.co.inGoogle Translate -> Google Translate
-    if domain in title and domain + "/" not in title and domain + " " not in title:
-        title = title.split(domain)[1]
+    if (
+        title.startswith(domain)
+        and len(title) > len(domain)
+        and not title.startswith(domain + "/")
+        and not title.startswith(domain + " ")
+    ):
+        title = title.removeprefix(domain)
     return title
 
 
