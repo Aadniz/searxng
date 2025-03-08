@@ -15,6 +15,12 @@ jobs:
         run: |
           sudo ./utils/searxng.sh install packages
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: 'x64'
+
       - id: checkoutRepo
         name: Checkout repository
         uses: actions/checkout@v4
