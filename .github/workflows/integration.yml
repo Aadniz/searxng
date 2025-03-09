@@ -20,9 +20,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Ubuntu packages
+      - name: Install Ubuntu packages and dependencies
         run: |
           sudo ./utils/searxng.sh install packages
+          sudo apt install -y firefox shellcheck
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -37,8 +42,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Ubuntu packages
+      - name: Install Ubuntu packages and dependencies
         run: sudo ./utils/searxng.sh install buildhost
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
