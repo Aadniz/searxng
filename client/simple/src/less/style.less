@@ -80,6 +80,12 @@ body {
   margin: 0;
 }
 
+@supports (height: 100dvh) {
+  body {
+    height: 100dvh;
+  }
+}
+
 main {
   width: 100%;
   margin-bottom: 2rem;
@@ -1163,3 +1169,6 @@ summary.title {
 pre code {
   white-space: pre-wrap;
 }
+
+// import layouts of the Result types
+@import "result_types/keyvalue.less";
