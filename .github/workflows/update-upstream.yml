@@ -12,8 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Ubuntu packages
-        run: |
-          sudo ./utils/searxng.sh install packages
+        run: sudo ./utils/searxng.sh install packages
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: 'x64'
 
       - id: checkoutRepo
         name: Checkout repository
@@ -51,6 +56,13 @@ jobs:
         run: |
           ! git status | grep "both modified" | grep -v "searx/static/themes/simple/css"
           echo "css_conflict=true" >> $GITHUB_OUTPUT
+
+      - id: installNode
+        name: Set up Node.js
+        if: steps.checkConflicts.outputs.css_conflict  == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - id: compileTheme
         name: Compile CSS theme
