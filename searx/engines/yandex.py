@@ -67,24 +67,31 @@ etools_cookie = "-".join(
         'openNewWindow_true',
         'pageResults_20',
         'queryAutoFocus_true',
-        "_".join(
-            [
-                'rankCalibration',
-                '%28Base',
-                '0%29%28Bing',
-                '0%29%28Brave',
-                '0%29%28DuckDuckGo',
-                '0%29%28Google',
-                '0%29%28Lilo',
-                '0%29%28Mojeek',
-                '0%29%28Qwant',
-                '0%29%28Search',
-                '0%29%28Tiger',
-                '0%29%28Wikipedia',
-                '0%29%28Yahoo',
-                '0%29%28Yandex',
-                '4%29',
-            ]
+        'rankCalibration_'
+        + quote(
+            '('
+            + ")(".join(
+                [
+                    "Alexandria_0",
+                    "Base_0",
+                    "Bing_0",
+                    "Brave_0",
+                    "DuckDuckGo_0",
+                    "Google_0",
+                    "Lilo_0",
+                    "Markensuche_0",
+                    "Mojeek_0",
+                    "Search_0",
+                    "Stract_0",
+                    "SwissPress_0",
+                    "Tiger_0",
+                    "Wiby_0",
+                    "Wikipedia_0",
+                    "Yahoo_0",
+                    "Yandex_2",
+                ]
+            )
+            + ')'
         ),
         'redirectLinks_false',
         'safeSearch_false',
