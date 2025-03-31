@@ -560,6 +560,11 @@ engines:
     engine: bing_videos
     shortcut: biv
 
+  - name: bitchute
+    engine: bitchute
+    shortcut: bit
+    disabled: true
+
   - name: bitbucket
     engine: xpath
     paging: true
@@ -1121,6 +1126,11 @@ engines:
       require_api_key: false
       results: JSON
 
+  - name: il post
+    engine: il_post
+    shortcut: pst
+    disabled: true
+
   - name: imdb
     engine: imdb
     shortcut: imdb
@@ -1349,6 +1359,11 @@ engines:
     shortcut: mwm
     disabled: true
 
+  - name: niconico
+    engine: niconico
+    shortcut: nico
+    disabled: true
+
   - name: npm
     engine: npm
     shortcut: npm
@@ -1388,6 +1403,11 @@ engines:
   - name: odysee
     engine: odysee
     shortcut: od
+    disabled: true
+
+  - name: ollama
+    engine: ollama
+    shortcut: ollama
     disabled: true
 
   - name: openairedatasets
@@ -1651,6 +1671,20 @@ engines:
     shortcut: pypi
     engine: pypi
 
+  - name: quark
+    quark_category: general
+    categories: [general]
+    engine: quark
+    shortcut: qk
+    disabled: true
+
+  - name: quark images
+    quark_category: images
+    categories: [images]
+    engine: quark
+    shortcut: qki
+    disabled: true
+
   - name: qwant
     qwant_categ: web
     engine: qwant
@@ -1711,6 +1745,12 @@ engines:
     shortcut: re
     page_size: 25
     disabled: true
+
+  - name: reuters
+    engine: reuters
+    shortcut: reu
+    # https://docs.searxng.org/dev/engines/online/reuters.html
+    # sort_order = "relevance"
 
   - name: right dao
     engine: xpath
