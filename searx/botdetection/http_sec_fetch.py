@@ -12,10 +12,10 @@ Metadata`_.  A request is filtered out in case of:
 .. _Fetch Metadata:
    https://developer.mozilla.org/en-US/docs/Glossary/Fetch_metadata_request_header
 
-.. Sec-Fetch-Dest:
+.. _Sec-Fetch-Dest:
    https://developer.mozilla.org/en-US/docs/Web/API/Request/destination
 
-.. Sec-Fetch-Mode:
+.. _Sec-Fetch-Mode:
    https://developer.mozilla.org/en-US/docs/Web/API/Request/mode
 
 
@@ -86,7 +86,7 @@ def filter_request(
     user_agent = request.headers.get('User-Agent', '')
     if is_browser_supported(user_agent):
         val = request.headers.get("Sec-Fetch-Mode", "")
-        if val != "navigate":
+        if val not in ('navigate', 'cors'):
             logger.debug("invalid Sec-Fetch-Mode '%s'", val)
             return flask.redirect(flask.url_for('index'), code=302)
 
@@ -96,7 +96,7 @@ def filter_request(
             flask.redirect(flask.url_for('index'), code=302)
 
         val = request.headers.get("Sec-Fetch-Dest", "")
-        if val != "document":
+        if val not in ('document', 'empty'):
             logger.debug("invalid Sec-Fetch-Dest '%s'", val)
             flask.redirect(flask.url_for('index'), code=302)
 
