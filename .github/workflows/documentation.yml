@@ -1,11 +1,16 @@
 ---
-name: Checker
+name: Documentation
 
 # yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 4 * * 5"
+  workflow_run:
+    workflows:
+      - Integration
+    types:
+      - completed
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -18,9 +23,14 @@ env:
   PYTHON_VERSION: "3.13"
 
 jobs:
-  search:
-    name: Search
+  release:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    name: Release
     runs-on: 'self-hosted'  # Ran out of hours :P
+    permissions:
+      # for JamesIves/github-pages-deploy-action to push
+      contents: write
+
     steps:
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -31,16 +41,27 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: "false"
+          fetch-depth: "0"
 
       - name: Setup cache Python
         uses: actions/cache@v4
         with:
           key: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-${{ hashFiles('./requirements*.txt') }}"
           restore-keys: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-"
-          path: "./local"
+          path: "./local/"
 
       - name: Setup venv
         run: make V=1 install
 
-      - name: Search checker
-        run: make search.checker
+      - name: Build documentation
+        run: make V=1 docs.clean docs.html
+
+      - name: Release
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: "dist/docs"
+          branch: "gh-pages"
+          commit-message: "[doc] build from commit ${{ github.sha }}"
+          # Automatically remove deleted files from the deploy branch
+          clean: "true"
+          single-commit: "true"
