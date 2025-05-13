@@ -27,21 +27,8 @@ env:
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    name: Build (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            os: ubuntu-24.04
-            emulation: false
-          - arch: arm64
-            os: ubuntu-24.04-arm
-            emulation: false
-          - arch: armv7
-            os: ubuntu-24.04-arm
-            emulation: true
+    name: Build (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
 
     permissions:
       # Organization GHCR
@@ -68,16 +55,16 @@ jobs:
       - name: Setup cache Python
         uses: actions/cache@v4
         with:
-          key: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-${{ hashFiles('./requirements*.txt') }}"
-          restore-keys: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-"
+          key: "python-${{ env.PYTHON_VERSION }}-amd64-${{ hashFiles('./requirements*.txt') }}"
+          restore-keys: "python-${{ env.PYTHON_VERSION }}-amd64-"
           path: "./local/"
 
       - name: Setup cache container mounts
         uses: actions/cache@v4
         with:
           # yamllint disable-line rule:line-length
-          key: "container-mounts-${{ matrix.arch }}-${{ hashFiles('./container/Dockerfile ./container/legacy/Dockerfile') }}"
-          restore-keys: "container-mounts-${{ matrix.arch }}-"
+          key: "container-mounts-amd64-${{ hashFiles('./container/Dockerfile ./container/legacy/Dockerfile') }}"
+          restore-keys: "container-mounts-amd64-"
           path: |
             /var/tmp/buildah-cache/
             /var/tmp/buildah-cache-*/
@@ -96,26 +83,13 @@ jobs:
       - name: Build
         id: build
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
         run: make podman.build
 
   test:
-    name: Test (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
+    name: Test (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            os: ubuntu-24.04
-            emulation: false
-          - arch: arm64
-            os: ubuntu-24.04-arm
-            emulation: false
-          - arch: armv7
-            os: ubuntu-24.04-arm
-            emulation: true
 
     permissions:
       # Organization GHCR
@@ -140,14 +114,14 @@ jobs:
 
       - name: Test
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
           GIT_URL: "${{ needs.build.outputs.git_url }}"
         run: make container.test
 
   release:
     if: github.repository_owner == 'searxng' && github.ref_name == 'master'
     name: Release
-    runs-on: ubuntu-24.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs:
       - build
       - test
