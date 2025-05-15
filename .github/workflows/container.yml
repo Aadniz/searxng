@@ -13,7 +13,7 @@ on:
       - master
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 permissions:
@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache@v4
         with:
           # yamllint disable-line rule:line-length
-          key: "container-mounts-amd64-${{ hashFiles('./container/Dockerfile ./container/legacy/Dockerfile') }}"
+          key: "container-mounts-amd64-${{ hashFiles('./container/Dockerfile', './container/legacy/Dockerfile') }}"
           restore-keys: "container-mounts-amd64-"
           path: |
             /var/tmp/buildah-cache/
@@ -90,10 +90,6 @@ jobs:
     name: Test (amd64)
     runs-on: 'self-hosted'  # Ran out of hours :P
     needs: build
-
-    permissions:
-      # Organization GHCR
-      packages: write
 
     steps:
       - name: Checkout
@@ -125,6 +121,10 @@ jobs:
     needs:
       - build
       - test
+
+    permissions:
+      # Organization GHCR
+      packages: write
 
     steps:
       - name: Checkout

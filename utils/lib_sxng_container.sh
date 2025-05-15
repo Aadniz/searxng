@@ -102,7 +102,6 @@ container.build() {
 
         if [ "$GITHUB_ACTIONS" = "true" ]; then
             params_build_builder+=" --cache-from=ghcr.io/$CONTAINER_IMAGE_ORGANIZATION/cache --cache-to=ghcr.io/$CONTAINER_IMAGE_ORGANIZATION/cache"
-            params_build+=" --cache-from=ghcr.io/$CONTAINER_IMAGE_ORGANIZATION/cache --cache-to=ghcr.io/$CONTAINER_IMAGE_ORGANIZATION/cache"
 
             # Tags
             params_build+=" --tag=ghcr.io/$CONTAINER_IMAGE_ORGANIZATION/cache:$CONTAINER_IMAGE_NAME-$arch$variant"
@@ -256,8 +255,7 @@ container.push() {
         done
 
         # Manifest tags
-        release_tags=("latest")
-        release_tags+=("$DOCKER_TAG")
+        release_tags=("latest" "$DOCKER_TAG")
 
         # Create manifests
         for tag in "${release_tags[@]}"; do
@@ -275,13 +273,18 @@ container.push() {
 
         podman image list
 
-        # Push manifests
-        for tag in "${release_tags[@]}"; do
-            build_msg CONTAINER "Pushing manifest with tag: $tag"
+        # Remote registries
+        release_registries=("ghcr.io" "docker.io")
 
-            podman manifest push \
-                "localhost/$CONTAINER_IMAGE_ORGANIZATION/$CONTAINER_IMAGE_NAME:$tag" \
-                "docker://docker.io/$CONTAINER_IMAGE_ORGANIZATION/$CONTAINER_IMAGE_NAME:$tag"
+        # Push manifests
+        for registry in "${release_registries[@]}"; do
+            for tag in "${release_tags[@]}"; do
+                build_msg CONTAINER "Pushing manifest $tag to $registry"
+
+                podman manifest push \
+                    "localhost/$CONTAINER_IMAGE_ORGANIZATION/$CONTAINER_IMAGE_NAME:$tag" \
+                    "docker://$registry/$CONTAINER_IMAGE_ORGANIZATION/$CONTAINER_IMAGE_NAME:$tag"
+            done
         done
     )
     dump_return $?
