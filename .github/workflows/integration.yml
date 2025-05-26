@@ -54,6 +54,11 @@ jobs:
       - name: Setup venv
         run: make V=1 install
 
+      - name: Install latest Firefox
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y firefox
+
       - name: Run tests
         run: make V=1 ci.test
 
