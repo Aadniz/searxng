@@ -14,6 +14,7 @@ themes.all() {
     (   set -e
         build_msg SIMPLE "theme: run build"
         vite.simple.build
+        vite.red-floof.build
     )
     dump_return $?
 }
@@ -22,6 +23,7 @@ themes.fix() {
     (   set -e
         build_msg SIMPLE "theme: fix"
         vite.simple.fix
+        vite.red-floof.fix
     )
     dump_return $?
 }
@@ -31,6 +33,7 @@ themes.test() {
         # we run a build to test (in CI)
         build_msg SIMPLE "theme: run build (to test)"
         vite.simple.build
+        vite.red-floof.build
     )
     dump_return $?
 }
