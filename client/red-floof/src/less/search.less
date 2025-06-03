@@ -20,6 +20,11 @@
   grid-template-areas:
     "logo search"
     "spacer categories";
+  background-image: url("../img/searxng.png");
+  background-repeat: no-repeat;
+  background-size: 22%;
+  background-position-x: 100%;
+  background-origin: content-box;
 }
 
 .category_checkbox,
@@ -140,6 +145,9 @@ button.category_button {
 }
 
 .search_box {
+  border-color: var(--color-search-background-hover);
+  border-width: 2px;
+  border-style: solid;
   border-radius: 0.8rem;
   width: 100%;
   max-width: @search-width;
@@ -240,6 +248,7 @@ html.no-js #clear_search.hide_if_nojs {
   #search_header {
     padding: 1.5em @results-tablet-offset 0 @results-tablet-offset;
     column-gap: @results-tablet-offset;
+    background-image: none !important;
   }
 
   .search_filters {
