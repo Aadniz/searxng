@@ -241,6 +241,7 @@ def initialize(app: flask.Flask, settings):
             "https://docs.searxng.org/admin/searx.limiter.html"
         )
         if settings['server']['public_instance']:
+            print("HERE MAYBE??")
             sys.exit(1)
         return
 

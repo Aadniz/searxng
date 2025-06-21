@@ -6,6 +6,7 @@
 # pylint: disable=use-dict-literal
 from __future__ import annotations
 
+import errno
 import inspect
 import json
 import os
@@ -1347,7 +1348,23 @@ def run():
         print("Meow 8")
         logger.debug("run local development server on %s:%s", host, port)
         print("Meow 9")
-        app.run(port=port, host=host, threaded=True)
+        try:
+            app.run(port=port, host=host, threaded=True)
+        except OSError as e:
+            if e.errno == errno.EACCES:  # Permission denied
+                logger.error(
+                    f"Permission denied when trying to bind to {host}:{port}")
+                sys.exit(1)
+            elif e.errno == errno.EADDRINUSE:  # Port already in use
+                logger.error(f"Port {port} is already in use")
+                sys.exit(1)
+            else:
+                logger.error(f"Failed to start server: {e}")
+                raise
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            raise
+
         print("Meow 10")
 
 
@@ -1422,5 +1439,11 @@ patch_application(app)
 init()
 
 if __name__ == "__main__":
-    print("MEOWWWWWW!!!")
-    run()
+    try:
+        print("MEOWWWWWW!!!")
+        run()
+    except SystemExit as e:
+        sys.exit(e.code)  # Properly propagate the exit code
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
+        sys.exit(1)
