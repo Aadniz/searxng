@@ -1325,11 +1325,16 @@ def run():
     .. _Flask.run: https://flask.palletsprojects.com/en/stable/api/#flask.Flask.run
     """
 
+    print("Meow 2")
     host: str = get_setting("server.bind_address")  # type: ignore
+    print("Meow 3")
     port: int = get_setting("server.port")  # type: ignore
+    print("Meow 4")
 
     if searx.sxng_debug:
+        print("Meow 5")
         logger.debug("run local development server (DEBUG) on %s:%s", host, port)
+        print("Meow 6")
         app.run(
             debug=True,
             port=port,
@@ -1337,9 +1342,13 @@ def run():
             threaded=True,
             extra_files=[DEFAULT_SETTINGS_FILE],
         )
+        print("Meow 7")
     else:
+        print("Meow 8")
         logger.debug("run local development server on %s:%s", host, port)
+        print("Meow 9")
         app.run(port=port, host=host, threaded=True)
+        print("Meow 10")
 
 
 def is_werkzeug_reload_active() -> bool:
