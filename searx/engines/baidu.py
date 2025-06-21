@@ -98,7 +98,12 @@ def response(resp):
     if baidu_category == 'images':
         # baidu's JSON encoder wrongly quotes / and ' characters by \\ and \'
         text = text.replace(r"\/", "/").replace(r"\'", "'")
-    data = json.loads(text, strict=False)
+    try:
+        data = json.loads(text, strict=False)
+    except ValueError as e:
+        with open("/tmp/baidu_debug.log", "a") as my_file:
+            my_file.write("The following has a value error:\n" + text + "\n\n")
+        raise ValueError(f"Failed to parse JSON response: {e}") from e
     parsers = {'general': parse_general, 'images': parse_images, 'it': parse_it}
 
     return parsers[baidu_category](data)
