@@ -12,6 +12,11 @@ vite.:  .. to be done ..
     fix:   run prettiers on simple theme
     lint:  run linters on simple theme
     dev:   start development server
+  red-floof.:
+    build: build static files of the red-floof theme
+    fix:   run prettiers on red-floof theme
+    lint:  run linters on red-floof theme
+    dev:   start development server
 EOF
 }
 
@@ -69,6 +74,17 @@ templates.simple.pygments() {
     return 0
 }
 
+# ToDo: vite server is not implemented yet / will be done in a follow up PR
+#
+# vite.red-floof.dev() {
+#     (   set -e
+#         build_msg RED_FLOOF "start server for FE development of: ${VITE_RED_FLOOF_THEME}"
+#         pushd "${VITE_RED_FLOOF_THEME}"
+#         npm install
+#         npm exec -- vite
+#         popd &> /dev/null
+#     )
+# }
 
 vite.red-floof.build() {
     (   set -e
@@ -79,8 +95,6 @@ vite.red-floof.build() {
 
         pushd "${VITE_RED_FLOOF_THEME}"
         npm install
-        npm run fix
-        npm run icons.html
         npm run build
         popd &> /dev/null
     )
@@ -90,6 +104,13 @@ vite.red-floof.fix() {
     (   set -e
         node.env
         npm --prefix client/red-floof run fix
+    )
+}
+
+vite.red-floof.lint() {
+    (   set -e
+        node.env
+        npm --prefix client/red-floof run lint
     )
 }
 
