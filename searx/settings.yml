@@ -2596,11 +2596,6 @@ engines:
     shortcut: wttr
     timeout: 9.0
 
-  - name: yummly
-    engine: yummly
-    shortcut: yum
-    disabled: true
-
   - name: brave
     engine: brave
     shortcut: br
