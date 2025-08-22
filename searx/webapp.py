@@ -181,23 +181,31 @@ def _get_locale_rfc5646(locale):
 
 # code-highlighter
 @app.template_filter('code_highlighter')
-def code_highlighter(codelines, language=None):
+def code_highlighter(codelines, language=None, hl_lines=None, strip_whitespace=True, strip_new_lines=True):
     if not language:
         language = 'text'
 
     try:
-        # find lexer by programming language
-        lexer = get_lexer_by_name(language, stripall=True)
+        lexer = get_lexer_by_name(language, stripall=strip_whitespace, stripnl=strip_new_lines)
 
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("pygments lexer: %s " % e)
         # if lexer is not found, using default one
-        lexer = get_lexer_by_name('text', stripall=True)
+        lexer = get_lexer_by_name('text', stripall=strip_whitespace, stripnl=strip_new_lines)
 
     html_code = ''
     tmp_code = ''
     last_line = None
     line_code_start = None
+
+    def offset_hl_lines(hl_lines, start):
+        """
+        hl_lines in pygments are expected to be relative to the input
+        """
+        if hl_lines is None:
+            return None
+
+        return [line - start + 1 for line in hl_lines]
 
     # parse lines
     for line, code in codelines:
@@ -208,7 +216,12 @@ def code_highlighter(codelines, language=None):
         if last_line is not None and last_line + 1 != line:
 
             # highlight last codepart
-            formatter = HtmlFormatter(linenos='inline', linenostart=line_code_start, cssclass="code-highlight")
+            formatter = HtmlFormatter(
+                linenos='inline',
+                linenostart=line_code_start,
+                cssclass="code-highlight",
+                hl_lines=offset_hl_lines(hl_lines, line_code_start),
+            )
             html_code = html_code + highlight(tmp_code, lexer, formatter)
 
             # reset conditions for next codepart
@@ -222,7 +235,12 @@ def code_highlighter(codelines, language=None):
         last_line = line
 
     # highlight last codepart
-    formatter = HtmlFormatter(linenos='inline', linenostart=line_code_start, cssclass="code-highlight")
+    formatter = HtmlFormatter(
+        linenos='inline',
+        linenostart=line_code_start,
+        cssclass="code-highlight",
+        hl_lines=offset_hl_lines(hl_lines, line_code_start),
+    )
     html_code = html_code + highlight(tmp_code, lexer, formatter)
 
     return html_code
@@ -358,7 +376,7 @@ def get_client_settings():
         'favicon_resolver': req_pref.get_value('favicon_resolver'),
         'advanced_search': req_pref.get_value('advanced_search'),
         'query_in_title': req_pref.get_value('query_in_title'),
-        'safesearch': str(req_pref.get_value('safesearch')),
+        'safesearch': req_pref.get_value('safesearch'),
         'theme': req_pref.get_value('theme'),
         'doi_resolver': get_doi_resolver(),
     }
@@ -368,15 +386,7 @@ def render(template_name: str, **kwargs):
     # values from the preferences
     # pylint: disable=too-many-statements
     client_settings = get_client_settings()
-    kwargs['client_settings'] = str(
-        base64.b64encode(
-            bytes(
-                json.dumps(client_settings),
-                encoding='utf-8',
-            )
-        ),
-        encoding='utf-8',
-    )
+    kwargs['client_settings'] = base64.b64encode(json.dumps(client_settings).encode('utf-8')).decode('utf-8')
     kwargs['preferences'] = sxng_request.preferences
     kwargs.update(client_settings)
 

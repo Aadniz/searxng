@@ -22,6 +22,14 @@ themes.all() {
     dump_return $?
 }
 
+themes.red-floof() {
+    (   set -e
+        build_msg RED_FLOOF "theme: run build (red-floof)"
+        vite.red-floof.build
+    )
+    dump_return $?
+}
+
 themes.simple() {
     (
         set -e
@@ -31,10 +39,11 @@ themes.simple() {
     dump_return $?
 }
 
-themes.red-floof() {
-    (   set -e
-        build_msg RED_FLOOF "theme: run build (simple)"
-        vite.red-floof.build
+themes.simple.analyze() {
+    (
+        set -e
+        build_msg SIMPLE "theme: run analyze (simple)"
+        vite.simple.analyze
     )
     dump_return $?
 }
