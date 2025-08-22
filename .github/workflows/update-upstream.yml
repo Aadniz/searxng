@@ -58,11 +58,17 @@ jobs:
           echo "css_conflict=true" >> $GITHUB_OUTPUT
 
       - id: installNode
-        name: Set up Node.js
-        if: steps.checkConflicts.outputs.css_conflict  == 'true'
-        uses: actions/setup-node@v4
+        name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
         with:
-          node-version: '20'
+          node-version-file: "./.nvmrc"
+
+      - id: cacheNode
+        name: Setup cache Node.js
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809  # v4.2.4
+        with:
+          key: "nodejs-${{ runner.arch }}-${{ hashFiles('./.nvmrc', './package.json') }}"
+          path: "./client/simple/node_modules/"
 
       - id: compileTheme
         name: Compile CSS theme
