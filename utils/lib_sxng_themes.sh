@@ -30,6 +30,15 @@ themes.red-floof() {
     dump_return $?
 }
 
+themes.red-floof.analyze() {
+    (
+        set -e
+        build_msg RED_FLOOF "theme: run analyze (red-floof)"
+        vite.red-floof.analyze
+    )
+    dump_return $?
+}
+
 themes.simple() {
     (
         set -e

@@ -118,6 +118,21 @@ vite.red-floof.build() {
     )
 }
 
+vite.red-floof.analyze() {
+    (
+        set -e
+        templates.red-floof.pygments
+
+        node.env
+        build_msg RED_FLOOF "run analyze of theme from: ${VITE_RED_FLOOF_THEME}"
+
+        pushd "${VITE_RED_FLOOF_THEME}"
+        npm install
+        VITE_BUNDLE_ANALYZE=true npm run build
+        popd &>/dev/null
+    )
+}
+
 vite.red-floof.fix() {
     (   set -e
         node.env
