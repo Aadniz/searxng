@@ -105,7 +105,8 @@ templates.simple.pygments() {
 # }
 
 vite.red-floof.build() {
-    (   set -e
+    (
+        set -e
         templates.red-floof.pygments
 
         node.env
@@ -114,7 +115,7 @@ vite.red-floof.build() {
         pushd "${VITE_RED_FLOOF_THEME}"
         npm install
         npm run build
-        popd &> /dev/null
+        popd &>/dev/null
     )
 }
 
@@ -134,14 +135,16 @@ vite.red-floof.analyze() {
 }
 
 vite.red-floof.fix() {
-    (   set -e
+    (
+        set -e
         node.env
         npm --prefix client/red-floof run fix
     )
 }
 
 vite.red-floof.lint() {
-    (   set -e
+    (
+        set -e
         node.env
         npm --prefix client/red-floof run lint
     )
@@ -149,8 +152,8 @@ vite.red-floof.lint() {
 
 templates.red-floof.pygments() {
     build_msg PYGMENTS "searxng_extra/update/update_pygments.py"
-    pyenv.cmd python searxng_extra/update/update_pygments.py \
-        | prefix_stdout "${_Blue}PYGMENTS ${_creset} "
+    pyenv.cmd python searxng_extra/update/update_pygments.py |
+        prefix_stdout "${_Blue}PYGMENTS ${_creset} "
     if [ "${PIPESTATUS[0]}" -ne "0" ]; then
         build_msg PYGMENTS "building LESS files for pygments failed"
         return 1

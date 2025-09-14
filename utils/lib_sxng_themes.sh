@@ -23,7 +23,8 @@ themes.all() {
 }
 
 themes.red-floof() {
-    (   set -e
+    (
+        set -e
         build_msg RED_FLOOF "theme: run build (red-floof)"
         vite.red-floof.build
     )
