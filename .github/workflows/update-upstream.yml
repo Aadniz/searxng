@@ -8,12 +8,9 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   merge:
     runs-on: 'self-hosted'  # Ran out of hours :P
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          # Fine-grained PAT with contents:write and workflows:write scopes
-          token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Install packages
         run: sudo ./utils/searxng.sh install packages
 
@@ -25,9 +22,11 @@ jobs:
 
       - id: checkoutRepo
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
+          # Fine-grained PAT with contents:write and workflows:write scopes
+          token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - id: confGit
         name: Configure git
