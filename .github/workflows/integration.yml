@@ -53,10 +53,10 @@ jobs:
       - name: Setup venv
         run: make V=1 install
 
-      - name: Install latest Firefox
+      - name: Install test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox
+          sudo apt-get install -y firefox shellcheck
 
       - name: Run tests
         run: make V=1 ci.test
