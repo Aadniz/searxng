@@ -36,20 +36,15 @@ const svg2svg_favicon_opts: Config = {
 export default {
   base: "/static/themes/red-floof/",
   publicDir: "static/",
-  mode: "production",
-  // mode: "development",
 
   build: {
     target: browserslistToEsbuild(manifest.browserslist),
-    cssTarget: browserslistToEsbuild(manifest.browserslist),
-    manifest: "manifest.json",
-    emptyOutDir: true,
     assetsDir: "",
     outDir: PATH.dist,
-
+    manifest: "manifest.json",
+    emptyOutDir: true,
     sourcemap: true,
-
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         // build CSS files
         "searxng-red-floof-ltr.css": `${PATH.src}/less/style-ltr.less`,
@@ -59,7 +54,7 @@ export default {
         // build script files
         "searxng.core": `${PATH.src}/js/core/index.ts`,
 
-        // ol
+        // ol pkg
         ol: `${PATH.src}/js/pkg/ol.ts`,
         "ol.css": `${PATH.modules}/ol/ol.css`
       },
@@ -111,37 +106,68 @@ export default {
     // -- svg images
     plg_svg2svg(
       [
-        { src: `${PATH.src}/svg/empty_favicon.svg`, dest: `${PATH.dist}/img/empty_favicon.svg` },
-        { src: `${PATH.src}/svg/select-dark.svg`, dest: `${PATH.dist}/img/select-dark.svg` },
-        { src: `${PATH.src}/svg/select-light.svg`, dest: `${PATH.dist}/img/select-light.svg` }
+        {
+          src: `${PATH.src}/svg/empty_favicon.svg`,
+          dest: `${PATH.dist}/img/empty_favicon.svg`
+        },
+        {
+          src: `${PATH.src}/svg/select-dark.svg`,
+          dest: `${PATH.dist}/img/select-dark.svg`
+        },
+        {
+          src: `${PATH.src}/svg/select-light.svg`,
+          dest: `${PATH.dist}/img/select-light.svg`
+        }
       ],
       svg2svg_opts
     ),
 
     // SearXNG brand (static)
     plg_svg2png([
-      { src: `${PATH.brand}/searxng-wordmark.svg`, dest: `${PATH.dist}/img/favicon.png` },
-      { src: `${PATH.brand}/searxng.svg`, dest: `${PATH.dist}/img/searxng.png` }
+      {
+        src: `${PATH.brand}/searxng-wordmark.svg`,
+        dest: `${PATH.dist}/img/favicon.png`
+      },
+      {
+        src: `${PATH.brand}/searxng.svg`,
+        dest: `${PATH.dist}/img/searxng.png`
+      }
     ]),
 
     // -- svg
     plg_svg2svg(
       [
-        { src: `${PATH.brand}/searxng.svg`, dest: `${PATH.dist}/img/searxng.svg` },
-        { src: `${PATH.brand}/img_load_error.svg`, dest: `${PATH.dist}/img/img_load_error.svg` }
+        {
+          src: `${PATH.brand}/searxng.svg`,
+          dest: `${PATH.dist}/img/searxng.svg`
+        },
+        {
+          src: `${PATH.brand}/img_load_error.svg`,
+          dest: `${PATH.dist}/img/img_load_error.svg`
+        }
       ],
       svg2svg_opts
     ),
 
     // -- favicon
     plg_svg2svg(
-      [{ src: `${PATH.brand}/searxng-wordmark.svg`, dest: `${PATH.dist}/img/favicon.svg` }],
+      [
+        {
+          src: `${PATH.brand}/searxng-wordmark.svg`,
+           dest: `${PATH.dist}/img/favicon.svg`
+        }
+      ],
       svg2svg_favicon_opts
     ),
 
     // -- red-floof templates
     plg_svg2svg(
-      [{ src: `${PATH.brand}/searxng-wordmark.svg`, dest: `${PATH.templates}/searxng-wordmark.min.svg` }],
+      [
+        {
+          src: `${PATH.brand}/searxng-wordmark.svg`,
+          dest: `${PATH.templates}/searxng-wordmark.min.svg`
+        }
+      ],
       svg2svg_opts
     )
   ], // end: plugins
@@ -160,9 +186,5 @@ export default {
       targets: browserslistToTargets(manifest.browserslist)
     },
     devSourcemap: true
-  }, // end: css
-
-  experimental: {
-    enableNativePlugin: true
-  } // end: experimental
+  } // end: css
 } satisfies UserConfig;

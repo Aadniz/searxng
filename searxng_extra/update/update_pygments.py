@@ -13,7 +13,10 @@ from pygments.formatters.html import HtmlFormatter
 
 from searx import searx_dir
 
-LESS_FILE = Path(searx_dir).parent / 'client/simple/generated/pygments.less'
+LESS_FILES = [
+    Path(searx_dir).parent / 'client/simple/generated/pygments.less',
+    Path(searx_dir).parent / 'client/red-floof/generated/pygments.less'
+]
 
 HEADER = f"""\
 // SPDX-License-Identifier: AGPL-3.0-or-later
@@ -68,6 +71,7 @@ def generat_css(light_style, dark_style) -> str:
 
 
 if __name__ == '__main__':
-    print("update: %s" % LESS_FILE)
-    with LESS_FILE.open('w', encoding='utf8') as f:
-        f.write(generat_css('default', 'monokai'))
+    for file in LESS_FILES:
+        print("update: %s" % file)
+        with file.open('w', encoding='utf8') as f:
+            f.write(generat_css('default', 'monokai'))
