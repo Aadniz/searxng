@@ -15,7 +15,7 @@ from searx import searx_dir
 
 LESS_FILES = [
     Path(searx_dir).parent / 'client/simple/generated/pygments.less',
-    Path(searx_dir).parent / 'client/red-floof/generated/pygments.less'
+    Path(searx_dir).parent / 'client/red-floof/generated/pygments.less',
 ]
 
 HEADER = f"""\
