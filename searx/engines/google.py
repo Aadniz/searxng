@@ -10,9 +10,9 @@ engines:
 - :ref:`google autocomplete`
 
 """
-
 import typing as t
 
+import os
 import re
 import random
 import string
@@ -268,6 +268,13 @@ def get_google_info(params: "OnlineParams", eng_traits: EngineTraits) -> dict[st
     # - https://github.com/searxng/searxng/pull/1679#issuecomment-1235432746
     # - https://github.com/searxng/searxng/issues/1555
     ret_val['cookies']['CONSENT'] = "YES+"
+
+    # HACK: see link below
+    # - https://github.com/searxng/searxng/issues/5286#issuecomment-3443209124
+    valid_secure_enid_cookie_path = "/tmp/valid_secure_enid_cookie.tmp"
+    if os.path.isfile(valid_secure_enid_cookie_path):
+        f = open(valid_secure_enid_cookie_path)
+        ret_val['cookies']['__Secure-ENID'] = f.read().strip()
 
     return ret_val
 
