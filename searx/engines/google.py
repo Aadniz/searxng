@@ -53,6 +53,7 @@ max_page = 50
 """
 time_range_support = True
 safesearch = True
+send_accept_language_header = True
 
 time_range_dict = {'day': 'd', 'week': 'w', 'month': 'm', 'year': 'y'}
 
@@ -93,7 +94,7 @@ def ui_async(start: int) -> str:
     return ",".join([arc_id, use_ac, _fmt])
 
 
-def get_google_info(params: "OnlineParams", eng_traits: EngineTraits) -> dict[str, t.Any]:
+def get_google_info(params: "OnlineParams", eng_traits: EngineTraits, query: str) -> dict[str, t.Any]:
     """Composing various (language) properties for the google engines (:ref:`google
     API`).
 
@@ -181,6 +182,22 @@ def get_google_info(params: "OnlineParams", eng_traits: EngineTraits) -> dict[st
     ret_val['locale'] = locale
     ret_val['subdomain'] = eng_traits.custom['supported_domains'].get(country.upper(), 'www.google.com')
 
+    # Extract initial request sei query string, and __Secure-ENID cookie
+    init_url = 'https://' + ret_val['subdomain'] + '/search?' + urlencode({
+            'q': query
+        })
+    resp = get(init_url, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0'})
+    dom = html.fromstring(resp.text)
+    for meta in eval_xpath_list(dom, "//noscript/meta/@content"):
+        print(meta)
+        if 'enablejs?sei=' in meta:
+            ret_val['params']['sei'] = meta.split('enablejs?sei=')[1]
+            break
+
+    init_url = 'https://' + ret_val['subdomain'] + '/search?' + urlencode({
+        'q': query
+    })
+
     # hl parameter:
     #   The hl parameter specifies the interface language (host language) of
     #   your user interface. To improve the performance and the quality of your
@@ -263,11 +280,18 @@ def get_google_info(params: "OnlineParams", eng_traits: EngineTraits) -> dict[st
 
     ret_val['headers']['Accept'] = '*/*'
 
+    ret_val['headers']['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0'
+
     # Cookies
 
     # - https://github.com/searxng/searxng/pull/1679#issuecomment-1235432746
     # - https://github.com/searxng/searxng/issues/1555
     ret_val['cookies']['CONSENT'] = "YES+"
+
+    if resp.cookies.get('__Secure-ENID'):
+        ret_val['cookies']['__Secure-ENID'] = resp.cookies['__Secure-ENID']
+    if resp.cookies.get('AEC'):
+        ret_val['cookies']['AEC'] = resp.cookies['AEC']
 
     return ret_val
 
@@ -276,13 +300,19 @@ def detect_google_sorry(resp):
     if resp.url.host == 'sorry.google.com' or resp.url.path.startswith('/sorry'):
         raise SearxEngineCaptchaException()
 
+def _get_google_cookie():
+    url = "https://www.google.com"
+    resp = get(url)
+    return "29.SE=NtxoLGD58kZm_oEKSaAMJWEl8zDqwgCkP0HXPSHj6NZMwpVc_V3OtW10-jaWWC3iisnLKUvgvTHlirj5LP17lA8ABHUfrD9n8ODbh0xoO04j5U7lAwNWx-Vm8_4epTxZFIT_tt505yPZiFBFPlXdBf4kBfV27m5XLJtbl0GBLQaz_rzvOPEFsy8chHCpvlVG6NUhjhln6fgda1njXbTHhEJuZtMU9TrG8FYCV8LzS-tg0oyY15Y3Aw"
+    # return resp.cookies.get("__Secure-ENID")
+
 
 def request(query: str, params: "OnlineParams") -> None:
     """Google search request"""
     # pylint: disable=line-too-long
     start = (params['pageno'] - 1) * 10
     str_async = ui_async(start)
-    google_info = get_google_info(params, traits)
+    google_info = get_google_info(params, traits, query)
     logger.debug("ARC_ID: %s", str_async)
 
     # https://www.google.de/search?q=corona&hl=de&lr=lang_de&start=0&tbs=qdr%3Ad&safe=medium
@@ -321,6 +351,15 @@ def request(query: str, params: "OnlineParams") -> None:
 
     params['cookies'] = google_info['cookies']
     params['headers'].update(google_info['headers'])
+
+    # Cookies from a google search in my WEB browser:
+    #
+    # - AEC=AaJma5u8bl1Fg7eXCYyrVShWrndO0bEtwglhoz87xOz-e7-pB0wfSomQmdU;
+    # - SOCS=CAESHAgCEhJnd3NfMjAyNTEwMjAtMF9SQzIaAmRlIAEaBgiAg-vHBg;
+    # - __Secure-ENID=29.SE=YbA_mexJDW0ILdIvXkivR7RgDTmMKqk3Cm26mm3C1NTLOi02bDd_VQFdZIQfFKcY8F8VkIc2DbXb9PTrUYItvch3UUER0H3UcBhAMD1GcxLRdIYTtuKoBXFPxrUjVWMdm_nfd_Yb0Qjv8y8-0UcGMIpcQZQVullC_bp8jb8N334TO9zBTqM80v2yWFhiiGxwFtbx9zOcvbJXOfR-qKFacDiOgQqtoUCXx8JLzfjVszZdgoyuidHhsxYtW-1HsSSX6Av2cIKuZSPR7u8_YefhP2-loDitCbuKNeDloF8T7tMNVx22y-W2_CcGFU3CrVp3fIOconiyrG8D4R_PLJ5BaK-UOhWjkUkPYmpjBoc_wfF08P8O7UGBB6Qk22uAv3I3deeQ
+
+    # Seems all what is needed is a *validated* __Secure-ENID
+    #params['cookies']["__Secure-ENID"] = _get_google_cookie()
 
 
 # =26;[3,"dimg_ZNMiZPCqE4apxc8P3a2tuAQ_137"]a87;data:image/jpeg;base64,/9j/4AAQSkZJRgABA
