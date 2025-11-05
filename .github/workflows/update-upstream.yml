@@ -1,0 +1,86 @@
+name: Auto Merge Fork
+
+on:  # yamllint disable-line rule:truthy
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  merge:
+    runs-on: 'self-hosted'  # Ran out of hours :P
+    permissions:
+      contents: write
+    steps:
+      - name: Install packages
+        run: sudo ./utils/searxng.sh install packages
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: 'x64'
+
+      - id: checkoutRepo
+        name: Checkout repository
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+          # Fine-grained PAT with contents:write and workflows:write scopes
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - id: confGit
+        name: Configure git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - id: checkUpstream
+        name: Check if remote upstream is already added
+        run: git remote -v | grep -q upstream || echo "upstream_missing=true" >> $GITHUB_OUTPUT
+
+      - id: addUpstream
+        name: Add upstream remote
+        if: steps.checkUpstream.outputs.upstream_missing  == 'true'
+        run: git remote add upstream https://github.com/searxng/searxng.git
+
+      - id: fetchUpstream
+        name: Fetch upstream changes
+        run: git fetch upstream
+
+      - id: mergeUpstream
+        name: Merge upstream changes
+        run: git merge upstream/master || echo "merge_failed=true" >> $GITHUB_OUTPUT
+
+      - id: checkConflicts
+        name: Check for merge conflicts
+        if: steps.mergeUpstream.outputs.merge_failed  == 'true'
+        # Check if there is ONLY a conflict in the static css, and preceed if so
+        run: |
+          ! git status | grep "both modified" | grep -v "searx/static/themes/simple/css"
+          echo "css_conflict=true" >> $GITHUB_OUTPUT
+
+      - id: installNode
+        name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version-file: "./.nvmrc"
+
+      - id: cacheNode
+        name: Setup cache Node.js
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809  # v4.2.4
+        with:
+          key: "nodejs-${{ runner.arch }}-${{ hashFiles('./.nvmrc', './package.json') }}"
+          path: "./client/simple/node_modules/"
+
+      - id: compileTheme
+        name: Compile CSS theme
+        if: steps.checkConflicts.outputs.css_conflict  == 'true'
+        run: |
+          make themes
+          ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/css/
+          git add searx/static/themes/simple/css/
+          git commit -m "Compiled static"
+
+      - id: pushChanges
+        name: Push changes
+        run: git push origin master
