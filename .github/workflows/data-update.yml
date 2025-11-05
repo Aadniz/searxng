@@ -21,7 +21,7 @@ jobs:
   data:
     if: github.repository_owner == 'searxng'
     name: ${{ matrix.fetch }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     strategy:
       fail-fast: false
       matrix:
