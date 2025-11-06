@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@searxng/theme-red-floof",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:icons && npm run build:vite",
+    "build:icons": "node theme_icons.ts",
+    "build:vite": "vite build",
+    "clean": "rm -Rf node_modules",
+    "fix": "npm run fix:stylelint && npm run fix:biome && npm run fix:package",
+    "fix:biome": "biome check --write",
+    "fix:package": "sort-package-json --quiet",
+    "fix:stylelint": "stylelint --fix strict 'src/**/*.{scss,sass,less,styl}'",
+    "lint": "npm run lint:biome && npm run lint:tsc",
+    "lint:biome": "biome lint",
+    "lint:tsc": "tsc --noEmit"
+  },
+  "browserslist": [
+    "Chrome >= 93",
+    "Firefox >= 92",
+    "Safari >= 15.4",
+    "not dead"
+  ],
+  "dependencies": {
+    "ionicons": "~8.0.0",
+    "normalize.css": "8.0.1",
+    "ol": "~10.6.0",
+    "swiped-events": "1.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.5",
+    "@types/node": "~24.6.2",
+    "browserslist": "~4.26.3",
+    "browserslist-to-esbuild": "~2.1.0",
+    "edge.js": "~6.3.0",
+    "less": "~4.4.1",
+    "lightningcss": "~1.30.2",
+    "sharp": "~0.34.4",
+    "sort-package-json": "~3.4.0",
+    "stylelint": "~16.24.0",
+    "stylelint-config-standard-less": "~3.0.0",
+    "stylelint-prettier": "~5.0.0",
+    "svgo": "~4.0.0",
+    "typescript": "~5.9.3",
+    "vite": "npm:rolldown-vite@7.1.15",
+    "vite-bundle-analyzer": "~1.2.3"
+  }
+}

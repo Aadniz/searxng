@@ -28,6 +28,8 @@ node.env() {
         set -e
         build_msg INSTALL "[npm] ./client/simple/package.json"
         npm --prefix client/simple install
+        build_msg INSTALL "[npm] ./client/red-floof/package.json"
+        npm --prefix client/red-floof install
     )
     dump_return $?
 }
@@ -47,6 +49,11 @@ node.clean() {
     (
         set -e
         npm --prefix client/simple run clean |
+            prefix_stdout "${_Blue}CLEAN    ${_creset} "
+        if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+            return 1
+        fi
+        npm --prefix client/red-floof run clean |
             prefix_stdout "${_Blue}CLEAN    ${_creset} "
         if [ "${PIPESTATUS[0]}" -ne "0" ]; then
             return 1
