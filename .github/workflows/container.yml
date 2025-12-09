@@ -26,24 +26,8 @@ env:
 jobs:
   build:
     if: github.repository_owner == 'searxng' || github.event_name == 'workflow_dispatch'
-    name: Build (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            march: amd64
-            os: ubuntu-24.04
-            emulation: false
-          - arch: arm64
-            march: arm64
-            os: ubuntu-24.04-arm
-            emulation: false
-          - arch: armv7
-            march: arm64
-            os: ubuntu-24.04-arm
-            emulation: true
+    name: Build (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
 
     permissions:
       packages: write
@@ -65,14 +49,14 @@ jobs:
 
           sudo apt-get purge -y podman runc crun conmon
 
-          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-${{ matrix.march }}.tar.gz"
-          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-${{ matrix.march }}.tar.gz.asc"
+          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-amd64.tar.gz"
+          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-amd64.tar.gz.asc"
           gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 0CCF102C4F95D89E583FF1D4F8B5AF50344BB503
-          gpg --batch --verify "podman-linux-${{ matrix.march }}.tar.gz.asc" "podman-linux-${{ matrix.march }}.tar.gz"
+          gpg --batch --verify "podman-linux-amd64.tar.gz.asc" "podman-linux-amd64.tar.gz"
 
-          tar -xzf "podman-linux-${{ matrix.march }}.tar.gz"
-          sudo cp -rfv ./podman-linux-${{ matrix.march }}/etc/. /etc/
-          sudo cp -rfv ./podman-linux-${{ matrix.march }}/usr/. /usr/
+          tar -xzf "podman-linux-amd64.tar.gz"
+          sudo cp -rfv ./podman-linux-amd64/etc/. /etc/
+          sudo cp -rfv ./podman-linux-amd64/usr/. /usr/
 
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       # yamllint enable rule:line-length
@@ -91,8 +75,8 @@ jobs:
       - name: Setup cache Python
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
-          key: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-${{ hashFiles('./requirements*.txt') }}"
-          restore-keys: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-"
+          key: "python-${{ env.PYTHON_VERSION }}-amd64-${{ hashFiles('./requirements*.txt') }}"
+          restore-keys: "python-${{ env.PYTHON_VERSION }}-amd64-"
           path: "./local/"
 
       - name: Get date
@@ -102,10 +86,10 @@ jobs:
       - name: Setup cache container
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
-          key: "container-${{ matrix.arch }}-${{ steps.date.outputs.date }}-${{ hashFiles('./requirements*.txt') }}"
+          key: "container-amd64-${{ steps.date.outputs.date }}-${{ hashFiles('./requirements*.txt') }}"
           restore-keys: |
-            "container-${{ matrix.arch }}-${{ steps.date.outputs.date }}-"
-            "container-${{ matrix.arch }}-"
+            "container-amd64-${{ steps.date.outputs.date }}-"
+            "container-amd64-"
           path: "/var/tmp/buildah-cache-*/*"
 
       - if: ${{ matrix.emulation }}
@@ -122,26 +106,13 @@ jobs:
       - name: Build
         id: build
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
         run: make podman.build
 
   test:
-    name: Test (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
+    name: Test (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            os: ubuntu-24.04
-            emulation: false
-          - arch: arm64
-            os: ubuntu-24.04-arm
-            emulation: false
-          - arch: armv7
-            os: ubuntu-24.04-arm
-            emulation: true
 
     steps:
       - name: Checkout
@@ -162,14 +133,14 @@ jobs:
 
       - name: Test
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
           GIT_URL: "${{ needs.build.outputs.git_url }}"
         run: make container.test
 
   release:
     if: github.repository_owner == 'searxng' && github.ref_name == 'master'
     name: Release
-    runs-on: ubuntu-24.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs:
       - build
       - test

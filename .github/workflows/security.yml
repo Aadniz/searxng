@@ -18,7 +18,7 @@ jobs:
   container:
     if: github.repository_owner == 'searxng'
     name: Container
-    runs-on: ubuntu-24.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     permissions:
       security-events: write
 

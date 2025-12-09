@@ -25,7 +25,7 @@ jobs:
   release:
     if: github.repository_owner == 'searxng' || github.event_name == 'workflow_dispatch'
     name: Release
-    runs-on: ubuntu-24.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     permissions:
       # for JamesIves/github-pages-deploy-action to push
       contents: write
