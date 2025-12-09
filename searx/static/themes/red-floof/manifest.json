@@ -1,0 +1,138 @@
+{
+  "../simple/src/js/index.ts": {
+    "file": "sxng-core.min.js",
+    "name": "core",
+    "src": "../simple/src/js/index.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "../simple/src/js/plugin/MapView.ts",
+      "../simple/src/js/plugin/InfiniteScroll.ts",
+      "../simple/src/js/plugin/Calculator.ts",
+      "../simple/src/js/main/keyboard.ts",
+      "../simple/src/js/main/search.ts",
+      "../simple/src/js/main/autocomplete.ts",
+      "../simple/src/js/main/results.ts",
+      "../simple/src/js/main/preferences.ts"
+    ]
+  },
+  "../simple/src/js/main/autocomplete.ts": {
+    "file": "chunk/KPZlR0ib.min.js",
+    "name": "autocomplete",
+    "src": "../simple/src/js/main/autocomplete.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js"
+    ]
+  },
+  "../simple/src/js/main/keyboard.ts": {
+    "file": "chunk/Db5v-hxx.min.js",
+    "name": "keyboard",
+    "src": "../simple/src/js/main/keyboard.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js"
+    ]
+  },
+  "../simple/src/js/main/preferences.ts": {
+    "file": "chunk/CyyZ9XJS.min.js",
+    "name": "preferences",
+    "src": "../simple/src/js/main/preferences.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js"
+    ]
+  },
+  "../simple/src/js/main/results.ts": {
+    "file": "chunk/Q2SRo2ED.min.js",
+    "name": "results",
+    "src": "../simple/src/js/main/results.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js"
+    ]
+  },
+  "../simple/src/js/main/search.ts": {
+    "file": "chunk/DxJxX49r.min.js",
+    "name": "search",
+    "src": "../simple/src/js/main/search.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js",
+      "_gZqIRpW1.min.js"
+    ]
+  },
+  "../simple/src/js/plugin/Calculator.ts": {
+    "file": "chunk/CJTgs2nP.min.js",
+    "name": "calculator",
+    "src": "../simple/src/js/plugin/Calculator.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js",
+      "_gZqIRpW1.min.js"
+    ]
+  },
+  "../simple/src/js/plugin/InfiniteScroll.ts": {
+    "file": "chunk/DBO1tjH7.min.js",
+    "name": "infinitescroll",
+    "src": "../simple/src/js/plugin/InfiniteScroll.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts",
+      "_13gvpunf.min.js",
+      "_gZqIRpW1.min.js"
+    ]
+  },
+  "../simple/src/js/plugin/MapView.ts": {
+    "file": "chunk/CjYPm6hO.min.js",
+    "name": "mapview",
+    "src": "../simple/src/js/plugin/MapView.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "../simple/src/js/index.ts"
+    ]
+  },
+  "_13gvpunf.min.js": {
+    "file": "chunk/13gvpunf.min.js",
+    "name": "assertelement"
+  },
+  "_gZqIRpW1.min.js": {
+    "file": "chunk/gZqIRpW1.min.js",
+    "name": "getelement",
+    "imports": [
+      "_13gvpunf.min.js"
+    ]
+  },
+  "src/less/rss.less": {
+    "file": "sxng-rss.min.css",
+    "name": "rss",
+    "names": [
+      "rss.css"
+    ],
+    "src": "src/less/rss.less",
+    "isEntry": true
+  },
+  "src/less/style-ltr.less": {
+    "file": "sxng-ltr.min.css",
+    "name": "ltr",
+    "names": [
+      "ltr.css"
+    ],
+    "src": "src/less/style-ltr.less",
+    "isEntry": true
+  },
+  "src/less/style-rtl.less": {
+    "file": "sxng-rtl.min.css",
+    "name": "rtl",
+    "names": [
+      "rtl.css"
+    ],
+    "src": "src/less/style-rtl.less",
+    "isEntry": true
+  }
+}
