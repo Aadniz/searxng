@@ -51,6 +51,7 @@ ENGINE_DEFAULT_ARGS: dict[str, t.Any] = {
     "using_tor_proxy": False,
     "send_accept_language_header": True,
     "tokens": [],
+    "suspended_times": {},
     "weight": 1.0,
 }
 """Default values that are set in an engine of type *module*, please compare
