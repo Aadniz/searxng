@@ -1,0 +1,96 @@
+name: Rebase onto upstream
+
+on:  # yamllint disable-line rule:truthy
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Rebase, build and test, but don't push"
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  rebase:
+    name: Rebase
+    runs-on: 'self-hosted'  # Ran out of hours :P
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: "26"
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+          # Fine-grained PAT with contents:write and workflows:write scopes
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - name: Rebase onto upstream
+        id: rebase
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch https://github.com/searxng/searxng.git master
+          if git merge-base --is-ancestor FETCH_HEAD HEAD; then
+            echo "Already up to date with upstream"
+            exit 0
+          fi
+          echo "lease=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          # drop the "[build] /static" commits, the themes are rebuilt after the rebase
+          export GIT_SEQUENCE_EDITOR="sed -i '/^pick [0-9a-f]* \(# \)\?\[build\] \/static$/d'"
+          if ! git rebase -i FETCH_HEAD; then
+            conflicts=$(git diff --name-only --diff-filter=U | xargs)
+            echo "::error::$(git log -1 --format='%h %s' REBASE_HEAD) conflicts in: $conflicts"
+            git rebase --abort
+            exit 1
+          fi
+          git log --oneline FETCH_HEAD..HEAD >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Setup cache Python
+        if: steps.rebase.outputs.lease
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        with:
+          key: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-${{ hashFiles('./requirements*.txt') }}"
+          restore-keys: |
+            python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-
+          path: "./local/"
+
+      - name: Setup cache Node.js
+        if: steps.rebase.outputs.lease
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        with:
+          key: "nodejs-${{ runner.arch }}-${{ hashFiles('**/package-lock.json') }}"
+          restore-keys: |
+            nodejs-${{ runner.arch }}-
+          path: "./client/simple/node_modules/"
+
+      - name: Setup venv
+        if: steps.rebase.outputs.lease
+        run: make V=1 install
+
+      - name: Build themes
+        if: steps.rebase.outputs.lease
+        run: make V=1 static.build.commit
+
+      - name: Run unit tests
+        if: steps.rebase.outputs.lease
+        run: make V=1 test.unit
+
+      - name: Push
+        if: steps.rebase.outputs.lease && !inputs.dry_run
+        env:
+          LEASE: ${{ steps.rebase.outputs.lease }}
+        run: git push --force-with-lease="master:$LEASE" origin master
