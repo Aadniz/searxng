@@ -28,7 +28,7 @@ jobs:
   update:
     if: github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'searxng'
     name: Update
-    runs-on: ubuntu-26.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     permissions:
       # For "make V=1 weblate.push.translations"
       contents: write
@@ -74,7 +74,7 @@ jobs:
       github.repository_owner == 'searxng'
       && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     name: Pull Request
-    runs-on: ubuntu-26.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     permissions:
       # For "make V=1 weblate.translations.commit"
       contents: write

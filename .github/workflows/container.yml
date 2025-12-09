@@ -28,18 +28,8 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch'
       || (github.repository_owner == 'searxng' && github.event.workflow_run.conclusion == 'success')
-    name: Build (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: ubuntu-26.04
-            arch: amd64
-          - runner: ubuntu-26.04-arm
-            arch: arm64
-          - runner: ubuntu-26.04-arm
-            arch: armv7
+    name: Build (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
 
     outputs:
       docker_tag: ${{ steps.build.outputs.docker_tag }}
@@ -63,48 +53,37 @@ jobs:
       - name: Setup cache Python
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         with:
-          key: "python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-${{ hashFiles('./requirements*.txt') }}"
+          key: "python-${{ env.PYTHON_VERSION }}-amd64-${{ hashFiles('./requirements*.txt') }}"
           restore-keys: |
-            python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-
+            python-${{ env.PYTHON_VERSION }}-amd64-
           path: "./local/"
 
       - name: Setup cache container
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         with:
-          key: "container-${{ matrix.arch }}-${{ hashFiles('./requirements*.txt') }}"
+          key: "container-amd64-${{ hashFiles('./requirements*.txt') }}"
           restore-keys: |
-            container-${{ matrix.arch }}-
+            container-amd64-
           path: "/var/tmp/buildah-cache-*/*"
 
       - name: Build
         id: build
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
         run: make container.build
 
       - name: Upload container image
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
-          name: container-image-${{ matrix.arch }}
+          name: container-image-amd64
           path: "/var/tmp/searxng-podman/*.tar"
           if-no-files-found: error
           retention-days: 1
 
   test:
-    name: Test (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
+    name: Test (amd64)
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: ubuntu-26.04
-            arch: amd64
-          - runner: ubuntu-26.04-arm
-            arch: arm64
-          - runner: ubuntu-26.04
-            arch: armv7
-
     steps:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1  # v4.4.0
@@ -118,19 +97,19 @@ jobs:
       - name: Download container image
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
-          pattern: container-image-${{ matrix.arch }}
+          pattern: container-image-amd64
           path: "/var/tmp/searxng-podman"
           merge-multiple: true
 
       - name: Test
         env:
-          OVERRIDE_ARCH: "${{ matrix.arch }}"
+          OVERRIDE_ARCH: "amd64"
         run: make container.test
 
   release:
     if: github.repository_owner == 'searxng' && github.ref_name == 'master'
     name: Release
-    runs-on: ubuntu-26.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     needs:
       - build
       - test

@@ -23,7 +23,7 @@ env:
 jobs:
   test:
     name: Python ${{ matrix.python-version }}
-    runs-on: ubuntu-26.04
+    runs-on: 'self-hosted'  # Ran out of hours :P
     strategy:
       matrix:
         python-version:
@@ -54,12 +54,20 @@ jobs:
       - name: Setup venv
         run: make V=1 install
 
+      - name: Install testing dependencies
+        run: |
+          sudo curl -fsSLo /etc/apt/keyrings/mozilla.asc https://packages.mozilla.org/apt/repo-signing-key.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/mozilla.asc] https://packages.mozilla.org/apt mozilla main" \
+            | sudo tee /etc/apt/sources.list.d/mozilla.list
+          sudo apt-get update
+          sudo apt-get install -y --allow-downgrades firefox/mozilla shellcheck
+
       - name: Run tests
         run: make V=1 ci.test
 
   theme:
     name: Theme
-    runs-on: ubuntu-26.04-arm
+    runs-on: 'self-hosted'  # Ran out of hours :P
     steps:
       - name: Setup Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
