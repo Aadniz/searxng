@@ -5,7 +5,10 @@ Ahmia (Onions)
 
 from urllib.parse import urlencode, urlparse, parse_qs
 from lxml.html import fromstring
+from searx.utils import gen_useragent, ElementType
 from searx.engines.xpath import extract_url, extract_text, eval_xpath_list, eval_xpath
+from searx.network import get
+from searx.enginelib import EngineCache
 
 # about
 about = {
@@ -23,7 +26,8 @@ paging = True
 page_size = 10
 
 # search url
-search_url = 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/search/?{query}'
+base_url = 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion'
+search_path = '/search/?{query}'
 time_range_support = True
 time_range_dict = {'day': 1, 'week': 7, 'month': 30}
 
@@ -35,9 +39,46 @@ content_xpath = './/p[1]'
 correction_xpath = '//*[@id="didYouMean"]//a'
 number_of_results_xpath = '//*[@id="totalResults"]'
 
+# Bot prevention settings
+name_token_xpath = '//form[@id="searchForm"]/input[@type="hidden"]/@name'
+value_token_xpath = '//form[@id="searchForm"]/input[@type="hidden"]/@value'
+
+_CACHE: EngineCache = None  # type: ignore
+
+
+def get_cache():
+    global _CACHE  # pylint: disable=global-statement
+    if _CACHE is None:
+        _CACHE = EngineCache("ahmia")  # type:ignore
+    return _CACHE
+
+
+def _get_tokens(dom: ElementType | None = None) -> str:
+    """
+    The tokens are hidden in a hidden input field.
+    They update every minute, but allow up to 1 hour old tokens to be used.
+    To spend the least amount of requests, it is best to always get the newest
+    tokens from each request. And in worst case if it has expired, we would
+    need to do a total of 2 requests.
+    """
+    if dom is None:
+        resp = get(base_url, headers={'User-Agent': gen_useragent()})
+        raw_html = resp.text
+        dom = fromstring(raw_html)
+    name_token = dom.xpath(name_token_xpath)[0]
+    value_token = dom.xpath(value_token_xpath)[0]
+    return f"{name_token}:{value_token}"
+
 
 def request(query, params):
-    params['url'] = search_url.format(query=urlencode({'q': query}))
+    cache = get_cache()
+    token_str: str | None = cache.get('ahmia-tokens')
+    if not token_str:
+        token_str = _get_tokens()
+        cache.set('ahmia-tokens', token_str, expire=60 * 60)
+    name_token, value_token = token_str.split(":")
+
+    params['url'] = base_url + search_path.format(query=urlencode({'q': query, name_token: value_token}))
 
     if params['time_range'] in time_range_dict:
         params['url'] += '&' + urlencode({'d': time_range_dict[params['time_range']]})
@@ -46,6 +87,7 @@ def request(query, params):
 
 
 def response(resp):
+    cache = get_cache()
     results = []
     dom = fromstring(resp.text)
 
@@ -57,7 +99,7 @@ def response(resp):
     # get results
     for result in trimmed_results:
         # remove ahmia url and extract the actual url for the result
-        raw_url = extract_url(eval_xpath_list(result, url_xpath, min_len=1), search_url)
+        raw_url = extract_url(eval_xpath_list(result, url_xpath, min_len=1), base_url + search_path)
         cleaned_url = parse_qs(urlparse(raw_url).query).get('redirect_url', [''])[0]
 
         title = extract_text(eval_xpath(result, title_xpath))
@@ -76,5 +118,9 @@ def response(resp):
             results.append({'number_of_results': int(extract_text(number_of_results))})
         except:  # pylint: disable=bare-except
             pass
+
+    # Update the tokens to the newest ones
+    token_str = _get_tokens(dom)
+    cache.set('ahmia-tokens', token_str, expire=60 * 60)
 
     return results
