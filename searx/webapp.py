@@ -86,7 +86,7 @@ from searx.webadapter import (
     parse_lang,
 )
 from searx.utils import gen_useragent, dict_subset
-from searx.version import VERSION_STRING, GIT_URL, GIT_BRANCH
+from searx.version import VERSION_STRING, GIT_URL, GIT_BRANCH, TOR_URL
 from searx.query import RawTextQuery
 from searx.plugins.oa_doi_rewrite import get_doi_resolver
 from searx.preferences import (
@@ -422,6 +422,7 @@ def render(template_name: str, **kwargs):
     kwargs['instance_name'] = get_setting('general.instance_name')
     kwargs['searx_version'] = VERSION_STRING
     kwargs['searx_git_url'] = GIT_URL
+    kwargs['searx_tor_url'] = TOR_URL
     kwargs['enable_metrics'] = get_setting('general.enable_metrics')
     kwargs['get_setting'] = get_setting
     kwargs['get_pretty_url'] = get_pretty_url
