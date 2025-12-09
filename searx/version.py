@@ -14,6 +14,7 @@ VERSION_TAG: str = "1.0.0"
 DOCKER_TAG: str = "1.0.0"
 GIT_URL: str = "unknown"
 GIT_BRANCH: str = "unknown"
+TOR_URL: str = "http://kantanrucloofzrfn7vqlsxbhipkqv55qygn4oxogbnjpfex54bw4gad.onion"
 
 logger = logging.getLogger("searx")
 
