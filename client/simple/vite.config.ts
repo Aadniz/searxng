@@ -16,13 +16,14 @@ import manifest from "./package.json" with { type: "json" };
 import { plg_svg2png, plg_svg2svg } from "./tools/plg.ts";
 
 const ROOT = "../../"; // root of the git repository
+const THEME = process.env.SXNG_THEME ?? "simple";
 
 const PATH = {
   brand: "src/brand/",
-  dist: resolve(ROOT, "searx/static/themes/simple/"),
+  dist: resolve(ROOT, `searx/static/themes/${THEME}/`),
   modules: "node_modules/",
   src: "src/",
-  templates: resolve(ROOT, "searx/templates/simple/")
+  templates: resolve(ROOT, `searx/templates/${THEME}/`)
 } as const;
 
 const svg2svg_opts: Config = {
