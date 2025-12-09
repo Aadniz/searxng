@@ -354,6 +354,9 @@ class Engine(abc.ABC):  # pylint: disable=too-few-public-methods
     weight: float = 1.0
     """Weighting of the results of this engine (:ref:`weight <settings engines>`)."""
 
+    suspended_times: dict[str, int]
+    """Per-engine suspended times"""
+
     proxies: dict[str, dict[str, str]]
     """Set proxies for a specific engine (YAML):
 
