@@ -5,6 +5,7 @@ STATIC_BUILD_COMMIT="[build] /static"
 STATIC_BUILT_PATHS=(
     'searx/templates/simple/icons.html'
     'searx/static/themes/simple'
+    'searx/static/themes/red-floof'
     'client/simple/package-lock.json'
 )
 
