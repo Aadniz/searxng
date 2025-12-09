@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import base64
+import functools
 
 from timeit import default_timer
 from html import escape
@@ -29,6 +30,7 @@ from whitenoise import WhiteNoise
 from whitenoise.base import Headers
 
 import flask
+import jinja2
 
 from flask import (
     Flask,
@@ -250,6 +252,27 @@ def get_result_template(theme_name: str, template_name: str):
     return 'result_templates/' + template_name
 
 
+# For themes that "extends" another theme
+# The format is {theme: base theme}
+THEME_FALLBACKS = {
+    'red-floof': 'simple',
+}
+
+
+# Dislike this code, but it was the lowest diff I could smash together:
+@functools.cache
+def get_theme_environment(theme_name: str) -> jinja2.Environment:
+    fallback = THEME_FALLBACKS[theme_name]
+    overrides = jinja2.PrefixLoader({fallback: jinja2.FileSystemLoader(os.path.join(templates_path, theme_name))})
+    return app.jinja_env.overlay(loader=jinja2.ChoiceLoader([overrides, app.create_global_jinja_loader()]))
+
+
+def get_theme_template(theme_name: str, template_name: str) -> str | jinja2.Template:
+    if theme_name in THEME_FALLBACKS:
+        return get_theme_environment(theme_name).get_template(f'{THEME_FALLBACKS[theme_name]}/{template_name}')
+    return f'{theme_name}/{template_name}'
+
+
 _STATIC_FILES: list[str] = []
 
 
@@ -398,7 +421,7 @@ def get_client_settings():
         'search_on_category_select': req_pref.get_value('search_on_category_select'),
         'hotkeys': req_pref.get_value('hotkeys'),
         'url_formatting': req_pref.get_value('url_formatting'),
-        'theme_static_path': custom_url_for('static', filename='themes/simple'),
+        'theme_static_path': custom_url_for('static', filename='themes/' + req_pref.get_value('theme')),
         'results_on_new_tab': req_pref.get_value('results_on_new_tab'),
         'favicon_resolver': req_pref.get_value('favicon_resolver'),
         'query_in_title': req_pref.get_value('query_in_title'),
@@ -473,7 +496,7 @@ def render(template_name: str, **kwargs):
     kwargs['urlparse'] = urlparse
 
     start_time = default_timer()
-    result = render_template('{}/{}'.format(kwargs['theme'], template_name), **kwargs)
+    result = render_template(get_theme_template(kwargs['theme'], template_name), **kwargs)
     sxng_request.render_time += default_timer() - start_time  # pylint: disable=assigning-non-slot
 
     return result
@@ -633,7 +656,7 @@ def client_token(token=None):
 @app.route('/rss.xsl', methods=['GET', 'POST'])
 def rss_xsl():
     return render_template(
-        f"{sxng_request.preferences.get_value('theme')}/rss.xsl",
+        get_theme_template(sxng_request.preferences.get_value('theme'), 'rss.xsl'),
         url_for=custom_url_for,
     )
 
