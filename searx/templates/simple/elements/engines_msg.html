@@ -4,7 +4,7 @@
     <summary class="title" id="engines_msg-title">{{ _('Messages from the search engines') }}</summary>
   {% else %}
   <details class="sidebar-collapsible">
-    <summary class="title" id="engines_msg-title">{{ _('Response time') }}: {{ max_response_time | round(1) }} {{ _('seconds') }}</summary>
+    <summary class="title" id="engines_msg-title">{{ _('Response time') }}: {{ max_response_time | round(1) }} {{ _('seconds') }} ({{timings | length}} / {{unresponsive_engines | length + timings | length}})</summary>
   {% endif %}
     <table class="engine-stats" id="engines_msg-table">
       {%- for engine_name, error_type in unresponsive_engines -%}
