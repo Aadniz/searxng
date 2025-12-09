@@ -309,6 +309,9 @@ class Engine(abc.ABC):  # pylint: disable=too-few-public-methods
     weight: int
     """Weighting of the results of this engine (:ref:`weight <settings engines>`)."""
 
+    suspended_times: dict[str, int]
+    """Per-engine suspended times"""
+
     def setup(self, engine_settings: dict[str, t.Any]) -> bool:  # pylint: disable=unused-argument
         """Dynamic setup of the engine settings.
 

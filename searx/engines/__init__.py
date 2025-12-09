@@ -46,6 +46,7 @@ ENGINE_DEFAULT_ARGS: dict[str, int | str | list[t.Any] | dict[str, t.Any] | bool
     "send_accept_language_header": False,
     "tokens": [],
     "max_page": 0,
+    "suspended_times": {},
 }
 # set automatically when an engine does not have any tab category
 DEFAULT_CATEGORY = 'other'

@@ -13,7 +13,11 @@ from searx import logger
 from searx.engines import engines
 from searx.network import get_time_for_thread, get_network
 from searx.metrics import histogram_observe, counter_inc, count_exception, count_error
-from searx.exceptions import SearxEngineAccessDeniedException
+from searx.exceptions import (
+    SearxEngineAccessDeniedException,
+    SearxEngineCaptchaException,
+    SearxEngineTooManyRequestsException,
+)
 from searx.utils import get_engine_from_settings
 
 if t.TYPE_CHECKING:
@@ -87,15 +91,10 @@ class SuspendedStatus:
     def is_suspended(self):
         return self.suspend_end_time >= default_timer()
 
-    def suspend(self, suspended_time: int | None, suspend_reason: str):
+    def suspend(self, suspended_time: int, suspend_reason: str):
         with self.lock:
             # update continuous_errors / suspend_end_time
             self.continuous_errors += 1
-            if suspended_time is None:
-                max_ban: int = get_setting("search.max_ban_time_on_fail")
-                ban_fail: int = get_setting("search.ban_time_on_fail")
-                suspended_time = min(max_ban, ban_fail)
-
             self.suspend_end_time = default_timer() + suspended_time
             self.suspend_reason = suspend_reason
             logger.debug("Suspend for %i seconds", suspended_time)
@@ -183,12 +182,32 @@ class EngineProcessor(ABC):
             count_exception(self.engine.name, exception_or_message)
         else:
             count_error(self.engine.name, exception_or_message)
-        # suspend the engine ?
+
+        # suspend the engine
         if suspend:
-            suspended_time = None
-            if isinstance(exception_or_message, SearxEngineAccessDeniedException):
-                suspended_time = exception_or_message.suspended_time
+            suspended_time = self._get_suspension_time(exception_or_message)
             self.suspended_status.suspend(suspended_time, error_message)  # pylint: disable=no-member
+
+    def _get_suspension_time(self, exception_or_message: BaseException | str) -> int:
+        if not isinstance(exception_or_message, SearxEngineAccessDeniedException):
+            max_ban: int = get_setting("search.max_ban_time_on_fail")
+            ban_fail: int = get_setting("search.ban_time_on_fail")
+            return min(max_ban, ban_fail)
+
+        engine_times = self.engine.suspended_times
+        if isinstance(exception_or_message, SearxEngineCaptchaException) and "SearxEngineCaptcha" in engine_times:
+            return engine_times["SearxEngineCaptcha"]
+        if (
+            isinstance(exception_or_message, SearxEngineTooManyRequestsException)
+            and "SearxEngineTooManyRequests" in engine_times
+        ):
+            return engine_times["SearxEngineTooManyRequests"]
+        if (
+            isinstance(exception_or_message, SearxEngineAccessDeniedException)
+            and "SearxEngineAccessDenied" in engine_times
+        ):
+            return engine_times["SearxEngineAccessDenied"]
+        return exception_or_message.suspended_time
 
     def _extend_container_basic(
         self,
