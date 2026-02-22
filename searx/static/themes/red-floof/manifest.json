@@ -26,7 +26,7 @@
     ]
   },
   "../simple/src/js/main/keyboard.ts": {
-    "file": "chunk/Db5v-hxx.min.js",
+    "file": "chunk/DtYCnLFs.min.js",
     "name": "keyboard",
     "src": "../simple/src/js/main/keyboard.ts",
     "isDynamicEntry": true,
@@ -36,7 +36,7 @@
     ]
   },
   "../simple/src/js/main/preferences.ts": {
-    "file": "chunk/CyyZ9XJS.min.js",
+    "file": "chunk/u0MAGmsp.min.js",
     "name": "preferences",
     "src": "../simple/src/js/main/preferences.ts",
     "isDynamicEntry": true,
@@ -46,7 +46,7 @@
     ]
   },
   "../simple/src/js/main/results.ts": {
-    "file": "chunk/Q2SRo2ED.min.js",
+    "file": "chunk/Dzkb_VTO.min.js",
     "name": "results",
     "src": "../simple/src/js/main/results.ts",
     "isDynamicEntry": true,
@@ -56,7 +56,7 @@
     ]
   },
   "../simple/src/js/main/search.ts": {
-    "file": "chunk/DxJxX49r.min.js",
+    "file": "chunk/DBXQ-GxO.min.js",
     "name": "search",
     "src": "../simple/src/js/main/search.ts",
     "isDynamicEntry": true,
@@ -67,7 +67,7 @@
     ]
   },
   "../simple/src/js/plugin/Calculator.ts": {
-    "file": "chunk/CJTgs2nP.min.js",
+    "file": "chunk/D6-Qow7H.min.js",
     "name": "calculator",
     "src": "../simple/src/js/plugin/Calculator.ts",
     "isDynamicEntry": true,
@@ -89,12 +89,15 @@
     ]
   },
   "../simple/src/js/plugin/MapView.ts": {
-    "file": "chunk/CjYPm6hO.min.js",
+    "file": "chunk/BJsQOApH.min.js",
     "name": "mapview",
     "src": "../simple/src/js/plugin/MapView.ts",
     "isDynamicEntry": true,
     "imports": [
       "../simple/src/js/index.ts"
+    ],
+    "css": [
+      "sxng-mapview.min.css"
     ]
   },
   "_13gvpunf.min.js": {
