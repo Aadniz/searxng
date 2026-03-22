@@ -31,4 +31,10 @@
       {%- endfor -%}
     </table>
   </details>
+  {% if timings or unresponsive_engines %}
+  <div id="sidebar-status">
+    <div id="sidebar-status-bar-ok" class="bar{{(100 * timings | length / (unresponsive_engines | length + timings | length)) | round | int }}"></div>
+    <div id="sidebar-status-bar-error" class="bar{{100 - (100 * timings | length / (unresponsive_engines | length + timings | length)) | round | int }}"></div>
+  </div>
+  {% endif %}
 </div>
