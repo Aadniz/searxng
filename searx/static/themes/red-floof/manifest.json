@@ -16,7 +16,7 @@
     ]
   },
   "../simple/src/js/main/autocomplete.ts": {
-    "file": "chunk/KPZlR0ib.min.js",
+    "file": "chunk/BJayIdUD.min.js",
     "name": "autocomplete",
     "src": "../simple/src/js/main/autocomplete.ts",
     "isDynamicEntry": true,
