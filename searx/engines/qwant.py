@@ -131,17 +131,17 @@ def request(query, params):
     elif qwant_categ == "images":
         args["count"] = 50
         args["locale"] = q_locale
+        args["offset"] = (params["pageno"] - 1) * args["count"]
         args["safesearch"] = params["safesearch"]
         args["tgp"] = 3
-        args["offset"] = (params["pageno"] - 1) * args["count"]
 
     else:  # web, news, videos
         args["count"] = 10
         args["locale"] = q_locale
+        args["offset"] = (params["pageno"] - 1) * args["count"]
         args["safesearch"] = params["safesearch"]
         args["llm"] = "false"
         args["tgp"] = 3
-        args["offset"] = (params["pageno"] - 1) * args["count"]
 
     params["url"] = url + urlencode(args)
 
