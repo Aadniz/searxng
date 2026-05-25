@@ -56,7 +56,7 @@ jobs:
         if: steps.mergeUpstream.outputs.merge_failed  == 'true'
         # Check if there is ONLY a conflict in the static css, and preceed if so
         run: |
-          ! git status | grep "both modified" | grep -v "searx/static/themes/simple"
+          ! git status | grep "both modified" | grep -v "searx/static/themes"
           echo "css_conflict=true" >> $GITHUB_OUTPUT
 
       - id: installNode
@@ -77,8 +77,8 @@ jobs:
         if: steps.checkConflicts.outputs.css_conflict  == 'true'
         run: |
           make themes
-          ! grep -r "<<<<<<< HEAD" searx/static/themes/simple/
-          git add searx/static/themes/simple/
+          ! grep -r "<<<<<<< HEAD" searx/static/themes/
+          git add searx/static/themes/
           git commit -m "Compiled static"
 
       - id: pushChanges
