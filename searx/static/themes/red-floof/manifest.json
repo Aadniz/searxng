@@ -67,7 +67,7 @@
     ]
   },
   "../simple/src/js/plugin/Calculator.ts": {
-    "file": "chunk/D6-Qow7H.min.js",
+    "file": "chunk/CL7W1iVK.min.js",
     "name": "calculator",
     "src": "../simple/src/js/plugin/Calculator.ts",
     "isDynamicEntry": true,
@@ -89,7 +89,7 @@
     ]
   },
   "../simple/src/js/plugin/MapView.ts": {
-    "file": "chunk/BJsQOApH.min.js",
+    "file": "chunk/DPqI74eN.min.js",
     "name": "mapview",
     "src": "../simple/src/js/plugin/MapView.ts",
     "isDynamicEntry": true,
