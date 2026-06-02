@@ -7,13 +7,13 @@
 # return42 <return42@users.noreply.translate.codeberg.org>, 2024, 2025.
 # Anonymous <anonymous@users.noreply.translate.codeberg.org>, 2025.
 # gkkulik <gkkulik@noreply.codeberg.org>, 2025.
-# return42 <return42@noreply.codeberg.org>, 2025.
+# return42 <return42@noreply.codeberg.org>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-24 18:43+0000\n"
-"PO-Revision-Date: 2025-06-22 17:06+0000\n"
+"POT-Creation-Date: 2026-05-25 10:44+0000\n"
+"PO-Revision-Date: 2026-05-19 12:08+0000\n"
 "Last-Translator: return42 <return42@noreply.codeberg.org>\n"
 "Language: szl\n"
 "Language-Team: Silesian "
@@ -170,7 +170,7 @@ msgid "Uptime"
 msgstr "Czas fungowanio"
 
 #. BRAND_CUSTOM_LINKS['ABOUT']
-#: searx/searxng.msg searx/templates/simple/base.html:46
+#: searx/searxng.msg searx/templates/simple/base.html:47
 msgid "About"
 msgstr "Informacyje"
 
@@ -535,28 +535,28 @@ msgstr "zawarty"
 msgid "answered"
 msgstr "ôdpedziany"
 
-#: searx/webapp.py:327
+#: searx/webapp.py:326
 msgid "No item found"
 msgstr "Żodyn elymynt niy znojdziōny"
 
 #: searx/engines/qwant.py:291
-#: searx/templates/simple/result_templates/images.html:23 searx/webapp.py:329
+#: searx/templates/simple/result_templates/images.html:23 searx/webapp.py:328
 msgid "Source"
 msgstr "Zdrzōdło"
 
-#: searx/webapp.py:331
+#: searx/webapp.py:330
 msgid "Error loading the next page"
 msgstr "Feler ladowanio nastympnyj strōny"
 
-#: searx/webapp.py:480 searx/webapp.py:881
+#: searx/webapp.py:479 searx/webapp.py:877
 msgid "Invalid settings, please edit your preferences"
 msgstr "Niynoleżne sztalōnki, zmiyń swoje preferyncyje"
 
-#: searx/webapp.py:496
+#: searx/webapp.py:495
 msgid "Invalid settings"
 msgstr "Niynoleżne sztalōnki"
 
-#: searx/webapp.py:573 searx/webapp.py:663
+#: searx/webapp.py:571 searx/webapp.py:661
 msgid "search error"
 msgstr "błōnd wyszukowanio"
 
@@ -616,12 +616,12 @@ msgstr "feler serwera API"
 msgid "Suspended"
 msgstr "Strzimane"
 
-#: searx/webutils.py:308
+#: searx/webutils.py:307
 #, python-brace-format
 msgid "{minutes} minute(s) ago"
 msgstr "{minutes} minut(y) tymu"
 
-#: searx/webutils.py:309
+#: searx/webutils.py:308
 #, python-brace-format
 msgid "{hours} hour(s), {minutes} minute(s) ago"
 msgstr "{hours} godzin(y), {minutes} minut(y) tymu"
@@ -760,6 +760,8 @@ msgid ""
 "Automatically loads the next page when scrolling to bottom of the current"
 " page"
 msgstr ""
+"Autōmatycznie laduj nastympno strōna przi przewijaniu do spodka teroźnyj "
+"strōny"
 
 #: searx/plugins/oa_doi_rewrite.py:54
 msgid "Open Access DOI rewrite"
@@ -858,45 +860,45 @@ msgstr "Idź do %(search_page)s."
 msgid "search page"
 msgstr "strōny wyszukowanio"
 
-#: searx/templates/simple/base.html:50
+#: searx/templates/simple/base.html:51
 msgid "Donate"
 msgstr "Spōmōż"
 
-#: searx/templates/simple/base.html:55 searx/templates/simple/base.html:57
+#: searx/templates/simple/base.html:56 searx/templates/simple/base.html:58
 #: searx/templates/simple/preferences.html:152
 msgid "Preferences"
 msgstr "Preferyncyje"
 
-#: searx/templates/simple/base.html:68
+#: searx/templates/simple/base.html:69
 msgid "Powered by"
 msgstr "Spiyrane ôd"
 
-#: searx/templates/simple/base.html:68
+#: searx/templates/simple/base.html:69
 msgid "a privacy-respecting, open metasearch engine"
 msgstr "ôtwarto metawyszukowarka, co szanuje prywatność"
 
-#: searx/templates/simple/base.html:69
+#: searx/templates/simple/base.html:70
 #: searx/templates/simple/result_templates/packages.html:59
 msgid "Source code"
 msgstr "Kod zdrzōdłowy"
 
-#: searx/templates/simple/base.html:70
+#: searx/templates/simple/base.html:71
 msgid "Issue tracker"
 msgstr "Dziynnik problymōw"
 
-#: searx/templates/simple/base.html:71 searx/templates/simple/stats.html:17
+#: searx/templates/simple/base.html:72 searx/templates/simple/stats.html:17
 msgid "Engine stats"
 msgstr "Statystyki wyszukowarki"
 
-#: searx/templates/simple/base.html:73
+#: searx/templates/simple/base.html:74
 msgid "Public instances"
 msgstr "Publiczne instancyje"
 
-#: searx/templates/simple/base.html:76
+#: searx/templates/simple/base.html:77
 msgid "Privacy policy"
 msgstr "Polityka prywatności"
 
-#: searx/templates/simple/base.html:79
+#: searx/templates/simple/base.html:80
 msgid "Contact instance maintainer"
 msgstr "Skōntaktuj sie ze administratorym instancyje"
 
@@ -1007,23 +1009,19 @@ msgstr "Ekstra zapytania"
 msgid "Cookies"
 msgstr "Cookies"
 
-#: searx/templates/simple/results.html:30
-msgid "Number of results"
-msgstr "Liczba wynikōw"
-
-#: searx/templates/simple/results.html:36
+#: searx/templates/simple/results.html:32
 msgid "Info"
 msgstr "Info"
 
-#: searx/templates/simple/results.html:77
+#: searx/templates/simple/results.html:73
 msgid "Back to top"
 msgstr "Nazod do wiyrchu"
 
-#: searx/templates/simple/results.html:95
+#: searx/templates/simple/results.html:91
 msgid "Previous page"
 msgstr "Piyrwyjszo strōna"
 
-#: searx/templates/simple/results.html:113
+#: searx/templates/simple/results.html:109
 msgid "Next page"
 msgstr "Dalszo strōna"
 
@@ -1064,12 +1062,12 @@ msgid "Result count"
 msgstr "Wielość wynikōw"
 
 #: searx/templates/simple/elements/engines_msg.html:7
-#: searx/templates/simple/preferences/engines.html:31
+#: searx/templates/simple/preferences/engines.html:30
 #: searx/templates/simple/stats.html:27
 msgid "Response time"
 msgstr "Czas ôdpowiedzi"
 
-#: searx/templates/simple/preferences/engines.html:35
+#: searx/templates/simple/preferences/engines.html:34
 #: searx/templates/simple/stats.html:28
 msgid "Reliability"
 msgstr "Wiarogodność"
@@ -1198,7 +1196,7 @@ msgstr ""
 #: searx/templates/simple/filters/safesearch.html:2
 #: searx/templates/simple/filters/safesearch.html:3
 #: searx/templates/simple/filters/safesearch.html:4
-#: searx/templates/simple/preferences/engines.html:27
+#: searx/templates/simple/preferences/engines.html:26
 #: searx/templates/simple/preferences/safesearch.html:2
 msgid "SafeSearch"
 msgstr "Bezpieczne szukanie"
@@ -1219,7 +1217,7 @@ msgid "None"
 msgstr "Brak"
 
 #: searx/templates/simple/filters/time_range.html:1
-#: searx/templates/simple/preferences/engines.html:28
+#: searx/templates/simple/preferences/engines.html:27
 msgid "Time range"
 msgstr "Zakres czasu"
 
@@ -1327,7 +1325,7 @@ msgstr "Wypostrzodkowanie"
 
 #: searx/templates/simple/preferences/center_alignment.html:14
 msgid "Display results in the center of the page (Oscar layout)."
-msgstr ""
+msgstr "Pokoż wyniki we postrzodku strōny (ukłod Oscar)."
 
 #: searx/templates/simple/preferences/cookies.html:2
 msgid ""
@@ -1414,15 +1412,11 @@ msgstr ""
 msgid "!bang"
 msgstr ""
 
-#: searx/templates/simple/preferences/engines.html:26
-msgid "Supports selected language"
-msgstr "Spiyro ôbrany jynzyk"
-
-#: searx/templates/simple/preferences/engines.html:29
+#: searx/templates/simple/preferences/engines.html:28
 msgid "Weight"
 msgstr ""
 
-#: searx/templates/simple/preferences/engines.html:33
+#: searx/templates/simple/preferences/engines.html:32
 msgid "Max time"
 msgstr "Maks. czas"
 
@@ -1439,10 +1433,14 @@ msgid ""
 "These settings are stored in your cookies. This allows us not to store "
 "this data about you."
 msgstr ""
+"Te sztalōnki sōm trzimane we zbiorach cookies, tōż mogymy niy trzimać "
+"tych danych ô ciebie."
 
 #: searx/templates/simple/preferences/footer.html:3
 msgid "These cookies serve your sole convenience; we don't use them to track you."
 msgstr ""
+"Te zbiory cookies sużōm ino twojimu kōmfortowi, niy używōmy ich do "
+"śledzynio cie."
 
 #: searx/templates/simple/preferences/footer.html:6
 msgid "Save"
@@ -1476,7 +1474,7 @@ msgstr "Proxy ôbrazōw"
 
 #: searx/templates/simple/preferences/image_proxy.html:14
 msgid "Proxy image results through SearXNG"
-msgstr ""
+msgstr "Przesyłanie wynikōw ôbrazōw bez proxy SearXNG"
 
 #: searx/templates/simple/preferences/language.html:24
 msgid "What language do you prefer for search?"
@@ -1527,6 +1525,8 @@ msgid ""
 "Perform a search immediately if a category is selected. Disable to select"
 " multiple categories"
 msgstr ""
+"Wykōnej wyszukowanie zaroz po ôbraniu kategoryje. Zastow, coby ôbrać "
+"wiyncyj kategoryji"
 
 #: searx/templates/simple/preferences/theme.html:2
 msgid "Theme"
@@ -2120,4 +2120,10 @@ msgstr "skryj wideo"
 
 #~ msgid "Submit a new issue on Github including the above information"
 #~ msgstr "Wyślij nowe zgłoszynie problymu na Github ze informacyjōm wyżyj"
+
+#~ msgid "Supports selected language"
+#~ msgstr "Spiyro ôbrany jynzyk"
+
+#~ msgid "Number of results"
+#~ msgstr "Liczba wynikōw"
 

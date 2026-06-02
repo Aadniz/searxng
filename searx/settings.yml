@@ -154,14 +154,13 @@ ui:
   # URL formatting: pretty, full or host
   url_formatting: pretty
 
-# Lock arbitrary settings on the preferences page.
-#
-# preferences:
-#   lock:
+preferences:
+  # Lock arbitrary settings on the preferences page.
+  lock: []
 #     - categories
 #     - language
 #     - autocomplete
-#     - favicon
+#     - favicon_resolver
 #     - safesearch
 #     - method
 #     - doi_resolver
@@ -309,6 +308,12 @@ engines:
     engine: 360search_videos
     shortcut: 360sov
     disabled: true
+
+  - name: 500px
+    engine: 500px
+    shortcut: "500"
+    disabled: true
+    timeout: 5
 
   - name: 9gag
     engine: 9gag
@@ -525,18 +530,22 @@ engines:
     engine: bing
     shortcut: bi
     disabled: true
+    # base_url: https://cn.bing.com  # for instances hosted in China
 
   - name: bing images
     engine: bing_images
     shortcut: bii
+    # base_url: https://cn.bing.com  # for instances hosted in China
 
   - name: bing news
     engine: bing_news
     shortcut: bin
+    # base_url: https://cn.bing.com  # for instances hosted in China
 
   - name: bing videos
     engine: bing_videos
     shortcut: biv
+    # base_url: https://cn.bing.com  # for instances hosted in China
 
   - name: bitchute
     engine: bitchute
@@ -878,6 +887,11 @@ engines:
   - name: findthatmeme
     engine: findthatmeme
     shortcut: ftm
+    disabled: true
+
+  - name: flaticon
+    engine: flaticon
+    shortcut: fli
     disabled: true
 
   - name: flickr
@@ -1385,7 +1399,6 @@ engines:
     engine: metacpan
     shortcut: cpan
     disabled: true
-    number_of_results: 20
 
   # https://docs.searxng.org/dev/engines/offline/search-indexer-engines.html#module-searx.engines.meilisearch
   # - name: meilisearch
@@ -1683,10 +1696,6 @@ engines:
       # image proxy of https://pixiv.perennialte.ch
       # - https://pximg.perennialte.ch
 
-  - name: podcastindex
-    engine: podcastindex
-    shortcut: podcast
-
   # Required dependency: psychopg2
   #  - name: postgresql
   #    engine: postgresql
@@ -1792,6 +1801,7 @@ engines:
     shortcut: qwn
     categories: news
     network: qwant
+    disabled: true
 
   - name: qwant images
     qwant_categ: images
@@ -1799,6 +1809,7 @@ engines:
     shortcut: qwi
     categories: [images, web]
     network: qwant
+    disabled: true
 
   - name: qwant videos
     qwant_categ: videos
@@ -1806,6 +1817,7 @@ engines:
     shortcut: qwv
     categories: [videos, web]
     network: qwant
+    disabled: true
 
   # - name: library
   #   engine: recoll
@@ -2535,12 +2547,6 @@ engines:
       require_api_key: false
       results: HTML
       language: de
-
-  - name: svgrepo
-    engine: svgrepo
-    shortcut: svg
-    timeout: 10.0
-    disabled: true
 
   - name: tootfinder
     engine: tootfinder
