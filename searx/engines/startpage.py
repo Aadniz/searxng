@@ -131,6 +131,7 @@ max_page = 18
 """Tested 18 pages maximum (argument ``page``), to be save max is set to 20."""
 
 time_range_support = True
+language_support = True
 safesearch = True
 
 time_range_dict = {"day": "d", "week": "w", "month": "m", "year": "y"}
@@ -382,6 +383,9 @@ def _get_image_result(result) -> dict[str, t.Any] | None:
         size_str = "".join(filter(str.isdigit, result["filesize"]))
         filesize = humanize_bytes(int(size_str))
 
+    img_format = result.get("format").upper()
+    if img_format == "UNKNOWN":
+        img_format = ""
     return {
         "template": "images.html",
         "url": url,
@@ -390,7 +394,7 @@ def _get_image_result(result) -> dict[str, t.Any] | None:
         "img_src": result.get("rawImageUrl"),
         "thumbnail_src": thumbnailUrl,
         "resolution": resolution,
-        "img_format": result.get("format"),
+        "img_format": img_format,
         "filesize": filesize,
     }
 
