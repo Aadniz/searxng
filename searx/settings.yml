@@ -444,27 +444,6 @@ engines:
     shortcut: conda
     disabled: true
 
-  - name: aol
-    engine: aol
-    search_type: search
-    categories: [general]
-    shortcut: aol
-    disabled: true
-
-  - name: aol images
-    engine: aol
-    search_type: image
-    categories: [images]
-    shortcut: aoli
-    disabled: true
-
-  - name: aol videos
-    engine: aol
-    search_type: video
-    categories: [videos]
-    shortcut: aolv
-    disabled: true
-
   - name: arch linux wiki
     engine: archlinux
     shortcut: al
@@ -687,6 +666,26 @@ engines:
     chinaso_category: videos
     disabled: true
     inactive: true
+
+  - name: cl0q
+    engine: json_engine
+    shortcut: cl
+    categories: general
+    paging: true
+    first_page_num: 0
+    page_size: 20
+    search_url: https://cl0q.com/search?q={query}&limit=20&offset={pageno}
+    results_query: results
+    url_query: domain
+    url_prefix: https://
+    title_query: title
+    content_query: description
+    disabled: true
+    inactive: true
+    about:
+      website: https://cl0q.com
+      description: "Open source network for searching domains"
+      results: JSON
 
   - name: cloudflareai
     engine: cloudflareai
@@ -978,6 +977,34 @@ engines:
     shortcut: fd
     disabled: true
 
+  - name: findfiles
+    engine: findfiles
+    findfiles_categ: all
+    categories: files
+    shortcut: fif
+    disabled: true
+
+  - name: findfiles images
+    engine: findfiles
+    findfiles_categ: image
+    categories: images
+    shortcut: fifi
+    disabled: true
+
+  - name: findfiles videos
+    engine: findfiles
+    findfiles_categ: video
+    categories: videos
+    shortcut: fifv
+    disabled: true
+
+  - name: findfiles music
+    engine: findfiles
+    findfiles_categ: audio
+    categories: music
+    shortcut: fifm
+    disabled: true
+
   - name: findthatmeme
     engine: findthatmeme
     shortcut: ftm
@@ -1113,6 +1140,11 @@ engines:
     api_path: "api.php"
     search_type: text
     timeout: 10
+
+  - name: giphy
+    engine: giphy
+    shortcut: gif
+    disabled: true
 
   - name: gitlab
     engine: gitlab
@@ -1295,6 +1327,13 @@ engines:
       require_api_key: false
       results: JSON
 
+  - name: iseek
+    engine: iseek
+    shortcut: isk
+    timeout: 4
+    disabled: true
+    inactive: true
+
   - name: il post
     engine: il_post
     shortcut: pst
@@ -1383,6 +1422,21 @@ engines:
   #   api_key: ""  # required
   #   kagi_categ: videos
 
+  - name: kozmonavt
+    engine: xpath
+    search_url: https://kozmonavt.su/s?q={query}
+    shortcut: koz
+    disabled: true
+    inactive: true
+    results_xpath: //div[contains(@class, 'list')]/section
+    url_xpath: concat('https://', substring-after(.//a/@href, '?q='))
+    title_xpath: .//a
+    content_xpath: .//div[contains(@class, 'snip')]
+    about:
+      website: https://kozmonavt.su
+      description: "Web site directory with its own index"
+      results: HTML
+
   - name: jisho
     engine: jisho
     shortcut: js
@@ -1399,6 +1453,22 @@ engines:
       - https://kat.am
     shortcut: kc
     timeout: 4.0
+
+  - name: kukei
+    engine: xpath
+    categories: [general, blogs]
+    search_url: https://kukei.eu/?q={query}
+    shortcut: kuk
+    disabled: true
+    inactive: true
+    results_xpath: //ul/li[contains(@class, "result-item-first-level")]
+    url_xpath: .//a/@href
+    title_xpath: .//h3
+    content_xpath: .//p
+    about:
+      website: https://kukei.eu
+      description: "Curated search for the small web"
+      results: HTML
 
   - name: lemmy communities
     engine: lemmy
@@ -2033,7 +2103,7 @@ engines:
   - name: rawweb
     engine: json_engine
     shortcut: rw
-    categories: general
+    categories: [general, blogs]
     paging: true
     search_url: 'https://api.rawweb.org/api/search?keyword={query}&page={pageno}&lang=*'
     results_query: data
@@ -2088,7 +2158,7 @@ engines:
   - name: searchmysite
     engine: xpath
     shortcut: sms
-    categories: general
+    categories: [general, blogs]
     paging: true
     search_url: https://searchmysite.net/search/?q={query}&page={pageno}
     results_xpath: //div[contains(@class,'search-result')]
@@ -2404,6 +2474,35 @@ engines:
       - 5000
     inactive: true
 
+  - name: tusksearch
+    engine: tusksearch
+    shortcut: tu
+    tusk_categ: web
+    categories: general
+    disabled: true
+
+  - name: tusksearch images
+    engine: tusksearch
+    shortcut: tui
+    paging: false
+    tusk_categ: images
+    categories: images
+    disabled: true
+
+  - name: tusksearch videos
+    engine: tusksearch
+    shortcut: tuv
+    tusk_categ: videos
+    categories: videos
+    disabled: true
+
+  - name: tusksearch news
+    engine: tusksearch
+    shortcut: tun
+    tusk_categ: news
+    categories: news
+    disabled: true
+
   # tmp suspended - too slow, too many errors
   #  - name: urbandictionary
   #    engine      : xpath
@@ -2416,6 +2515,24 @@ engines:
   - name: unsplash
     engine: unsplash
     shortcut: us
+
+  - name: unobtanium
+    engine: xpath
+    shortcut: uno
+    categories: [general, blogs]
+    paging: true
+    first_page_num: 0
+    search_url: https://unobtanium.rocks/search?search={query}&page={pageno}
+    results_xpath: //ul[contains(@class, 'search-results')]/li
+    url_xpath: .//a/@href
+    title_xpath: .//a/b
+    content_xpath: .//p[2]
+    disabled: true
+    inactive: true
+    about:
+      website: https://unobtanium.rocks
+      description: "Personal websites focused search engine."
+      results: HTML
 
   - name: yandex
     engine: yandex
@@ -2476,7 +2593,7 @@ engines:
     url_query: URL
     title_query: Title
     content_query: Snippet
-    categories: [general, web]
+    categories: [general, blogs]
     shortcut: wib
     disabled: true
     about:
@@ -2901,6 +3018,38 @@ engines:
     disabled: true
     inactive: true
 
+  - name: startpagina
+    engine: startpagina
+    shortcut: spnl
+    startpagina_categ: web
+    categories: general
+    disabled: true
+    inactive: true
+
+  - name: startpagina images
+    engine: startpagina
+    shortcut: spnli
+    startpagina_categ: images
+    categories: images
+    disabled: true
+    inactive: true
+
+  - name: startpagina videos
+    engine: startpagina
+    shortcut: spnlv
+    startpagina_categ: videos
+    categories: videos
+    disabled: true
+    inactive: true
+
+  - name: startpagina news
+    engine: startpagina
+    shortcut: spnln
+    startpagina_categ: news
+    categories: news
+    disabled: true
+    inactive: true
+
   - name: swisscows
     engine: swisscows
     categories: general
@@ -3022,6 +3171,22 @@ engines:
     engine: wttr
     shortcut: wttr
     timeout: 9.0
+
+  - name: xonaly
+    engine: xpath
+    search_url: https://xonaly.com/?query={query}
+    categories: general
+    shortcut: xo
+    disabled: true
+    inactive: true
+    results_xpath: //div[contains(@class, 'results-block')]/ul/li
+    url_xpath: ./div[contains(@class, 'result-title')]/a/@href
+    title_xpath: ./div[contains(@class, 'result-title')]/a
+    content_xpath: ./p[contains(@class, 'excerpt')]
+    about:
+      website: https://xonaly.com
+      description: "Canadian search engine with its own index"
+      results: HTML
 
   - name: zapmeta
     engine: xpath
