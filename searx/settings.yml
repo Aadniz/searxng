@@ -1585,6 +1585,11 @@ engines:
     disabled: true
     inactive: true
 
+  - name: magnific
+    engine: magnific
+    shortcut: mag
+    disabled: true
+
   - name: marginalia
     engine: marginalia
     shortcut: mar
@@ -2848,6 +2853,12 @@ engines:
     engine: naver
     shortcut: nvrv
     disabled: true
+
+  - name: neosearch
+    engine: neosearch
+    shortcut: neo
+    disabled: true
+    inactive: true
 
   - name: rubygems
     shortcut: rbg
