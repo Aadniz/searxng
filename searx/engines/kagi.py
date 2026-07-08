@@ -42,15 +42,14 @@ To enable Kagi, add the following to the ``engines`` seciton of
 .. _Api Portal: https://help.kagi.com/kagi/api/overview.html
 """
 
-
 from datetime import datetime, timedelta
 
 import typing as t
-import html
+
 
 from searx.extended_types import SXNG_Response
 from searx.result_types import EngineResults
-from searx.utils import parse_duration_string
+from searx.utils import html_to_text, parse_duration_string
 
 if t.TYPE_CHECKING:
     from searx.search.processors import OnlineParams
@@ -77,7 +76,12 @@ kagi_categ: t.Literal["search", "images", "news", "videos"] = "search"
 base_url = "https://kagi.com"
 
 safe_search_map = {0: False, 1: True, 2: True}
-time_range_to_days_map: dict[TimeRangeType, int] = {"day": 1, "week": 7, "month": 30, "year": 365}
+time_range_to_days_map: dict[TimeRangeType, int] = {
+    "day": 1,
+    "week": 7,
+    "month": 30,
+    "year": 365,
+}
 
 api_key = ""
 """Kagi API key. Required for using this engine."""
@@ -135,9 +139,13 @@ def response(resp: "SXNG_Response") -> EngineResults:
 
     if kagi_categ in ("images", "videos"):
         # the JSON key is "image" for "images" and "video" for "videos"
-        json_results = json_data["data"][kagi_categ[:-1]]
+        json_results = json_data["data"].get(kagi_categ[:-1])
     else:
-        json_results = json_data["data"][kagi_categ]
+        json_results = json_data["data"].get(kagi_categ)
+
+    # if no results were found, the response doesn't contain the results field
+    if not json_results:
+        return res
 
     for result in json_results:
         published_date: datetime | None = None
@@ -148,8 +156,8 @@ def response(resp: "SXNG_Response") -> EngineResults:
             res.add(
                 res.types.MainResult(
                     url=result["url"],
-                    title=html.unescape(result["title"]),
-                    content=html.unescape(result["snippet"]),
+                    title=html_to_text(result.get("title", "no title available")),
+                    content=html_to_text(result.get("snippet", "")),
                     thumbnail=result.get("image", {}).get("url") or "",
                     publishedDate=published_date,
                 )
@@ -158,15 +166,15 @@ def response(resp: "SXNG_Response") -> EngineResults:
             res.add(
                 res.types.Image(
                     url=result["url"],
-                    title=html.unescape(result.get("title")),
+                    title=html_to_text(result.get("title", "no title available")),
                     img_src=result.get("image", {}).get("url"),
-                    resolution=f"{result['image']['width']}x{result['image']['height']}",
+                    resolution=f"{result.get('image', {}).get('width')}x{result.get('image', {}).get('height')}",
                     thumbnail_src=result.get("props", {}).get("thumbnail", {}).get("url"),
                 )
             )
         elif kagi_categ == "videos":
             length: timedelta | None = None
-            if result["props"].get("duration"):
+            if result.get("props", {}).get("duration"):
                 length = parse_duration_string(result["props"]["duration"])
 
             res.add(
@@ -174,11 +182,11 @@ def response(resp: "SXNG_Response") -> EngineResults:
                     {
                         "template": "videos.html",
                         "url": result["url"],
-                        "title": html.unescape(result["title"]),
-                        "content": html.unescape(result["snippet"]),
+                        "title": html_to_text(result.get("title", "no title available")),
+                        "content": html_to_text(result.get("snippet", "")),
                         "thumbnail": result.get("image", {}).get("url"),
                         "publishedDate": published_date,
-                        "author": result["props"].get("creator_name"),
+                        "author": result.get("props", {}).get("creator_name"),
                         "length": length,
                     }
                 )
