@@ -16,7 +16,7 @@
     ]
   },
   "../simple/src/js/main/autocomplete.ts": {
-    "file": "chunk/BJayIdUD.min.js",
+    "file": "chunk/BqfnGHbO.min.js",
     "name": "autocomplete",
     "src": "../simple/src/js/main/autocomplete.ts",
     "isDynamicEntry": true,
@@ -46,7 +46,7 @@
     ]
   },
   "../simple/src/js/main/results.ts": {
-    "file": "chunk/Dzkb_VTO.min.js",
+    "file": "chunk/CH_Pe3GN.min.js",
     "name": "results",
     "src": "../simple/src/js/main/results.ts",
     "isDynamicEntry": true,
@@ -67,7 +67,7 @@
     ]
   },
   "../simple/src/js/plugin/Calculator.ts": {
-    "file": "chunk/CL7W1iVK.min.js",
+    "file": "chunk/C6vSzydp.min.js",
     "name": "calculator",
     "src": "../simple/src/js/plugin/Calculator.ts",
     "isDynamicEntry": true,

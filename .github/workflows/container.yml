@@ -25,7 +25,9 @@ env:
 
 jobs:
   build:
-    if: github.repository_owner == 'searxng' || github.event_name == 'workflow_dispatch'
+    if: |
+      github.event_name == 'workflow_dispatch'
+      || (github.repository_owner == 'searxng' && github.event.workflow_run.conclusion == 'success')
     name: Build (amd64)
     runs-on: 'self-hosted'  # Ran out of hours :P
 
@@ -37,33 +39,25 @@ jobs:
       git_url: ${{ steps.build.outputs.git_url }}
 
     steps:
-      # yamllint disable rule:line-length
-      - name: Setup podman
-        env:
-          PODMAN_VERSION: "v5.7.1"
-        run: |
-          sudo apt-get purge -y podman runc crun conmon
-
-          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-amd64.tar.gz"
-          curl -fsSLO "https://github.com/mgoltzsche/podman-static/releases/download/${{ env.PODMAN_VERSION }}/podman-linux-amd64.tar.gz.asc"
-          gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 0CCF102C4F95D89E583FF1D4F8B5AF50344BB503
-          gpg --batch --verify "podman-linux-amd64.tar.gz.asc" "podman-linux-amd64.tar.gz"
-
-          tar -xzf "podman-linux-amd64.tar.gz"
-          sudo cp -rfv ./podman-linux-amd64/etc/. /etc/
-          sudo cp -rfv ./podman-linux-amd64/usr/. /usr/
-
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      # yamllint enable rule:line-length
+      - name: Login to GHCR
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c  # v4.5.2
+        with:
+          registry: "ghcr.io"
+          username: "${{ github.repository_owner }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8  # v4.2.0
+
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          ref: "${{ github.event.workflow_run.head_sha || github.sha }}"
           persist-credentials: "false"
           fetch-depth: "0"
 
@@ -75,35 +69,19 @@ jobs:
             python-${{ env.PYTHON_VERSION }}-${{ runner.arch }}-
           path: "./local/"
 
-      - name: Get date
-        id: date
-        run: echo "date=$(date +'%Y%m%d')" >>$GITHUB_OUTPUT
-
       - name: Setup cache container
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         with:
-          key: "container-amd64-${{ steps.date.outputs.date }}-${{ hashFiles('./requirements*.txt') }}"
+          key: "container-amd64-${{ hashFiles('./requirements*.txt') }}"
           restore-keys: |
-            container-amd64-${{ steps.date.outputs.date }}-
             container-amd64-
           path: "/var/tmp/buildah-cache-*/*"
-
-      - if: ${{ matrix.emulation }}
-        name: Setup QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8  # v4.2.0
-
-      - name: Login to GHCR
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0  # v4.4.0
-        with:
-          registry: "ghcr.io"
-          username: "${{ github.repository_owner }}"
-          password: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Build
         id: build
         env:
           OVERRIDE_ARCH: "amd64"
-        run: make podman.build
+        run: make container.build
 
   test:
     name: Test (amd64)
@@ -111,21 +89,21 @@ jobs:
     needs: build
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-        with:
-          persist-credentials: "false"
-
-      - if: ${{ matrix.emulation }}
-        name: Setup QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8  # v4.2.0
-
       - name: Login to GHCR
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0  # v4.4.0
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c  # v4.5.2
         with:
           registry: "ghcr.io"
           username: "${{ github.repository_owner }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8  # v4.2.0
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: "${{ github.event.workflow_run.head_sha || github.sha }}"
+          persist-credentials: "false"
 
       - name: Test
         env:
@@ -145,24 +123,25 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - name: Login to Docker Hub
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c  # v4.5.2
         with:
-          persist-credentials: "false"
+          registry: "docker.io"
+          username: "${{ secrets.DOCKER_USER }}"
+          password: "${{ secrets.DOCKER_TOKEN }}"
 
       - name: Login to GHCR
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0  # v4.4.0
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c  # v4.5.2
         with:
           registry: "ghcr.io"
           username: "${{ github.repository_owner }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0  # v4.4.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
-          registry: "docker.io"
-          username: "${{ secrets.DOCKER_USER }}"
-          password: "${{ secrets.DOCKER_TOKEN }}"
+          ref: "${{ github.event.workflow_run.head_sha || github.sha }}"
+          persist-credentials: "false"
 
       - name: Release
         env:

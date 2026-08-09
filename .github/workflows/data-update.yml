@@ -40,12 +40,12 @@ jobs:
 
     steps:
       - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           persist-credentials: "false"
 
@@ -64,23 +64,17 @@ jobs:
         run: V=1 ./manage pyenv.cmd python "./searxng_extra/update/${{ matrix.fetch }}"
 
       - name: Create PR
-        id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
         with:
           author: "searxng-bot <searxng-bot@users.noreply.github.com>"
           committer: "searxng-bot <searxng-bot@users.noreply.github.com>"
-          title: "[data] update searx.data - ${{ matrix.fetch }}"
-          commit-message: "[data] update searx.data - ${{ matrix.fetch }}"
-          branch: "update_data_${{ matrix.fetch }}"
+          title: "[mod] data: update searx.data - ${{ matrix.fetch }}"
+          commit-message: "[mod] data: update searx.data - ${{ matrix.fetch }}"
+          branch: "ci-data-${{ matrix.fetch }}"
           delete-branch: "true"
           draft: "false"
           signoff: "false"
           body: |
-            [data] update searx.data - ${{ matrix.fetch }}
+            Update searx.data - ${{ matrix.fetch }}
           labels: |
             data
-
-      - name: Display information
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"

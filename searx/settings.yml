@@ -41,13 +41,13 @@ search:
   # Filter results. 0: None, 1: Moderate, 2: Strict
   safe_search: 0
   # Existing autocomplete backends: "360search", "baidu", "bing", "brave", "dbpedia", "duckduckgo", "google",
-  # "yandex", "privacywall", "mwmbl", "naver", "seznam", "sogou", "startpage", "swisscows", "quark", "qwant",
-  # "wikipedia" - leave blank to turn it off by default.
+  # "kagi", "yandex", "privacywall", "mwmbl", "naver", "seznam", "sogou", "startpage", "swisscows", "quark",
+  # "qwant", "wikipedia" - leave blank to turn it off by default.
   autocomplete: ""
   # minimun characters to type before autocompleter starts
   autocomplete_min: 4
   # backend for the favicon near URL in search results.
-  # Available resolvers: "allesedv", "duckduckgo", "google", "yandex" - leave blank to turn it off by default.
+  # Available resolvers: "allesedv", "duckduckgo", "google", "kagi", "yandex" - leave blank to turn it off by default.
   favicon_resolver: ""
   # Default search language - leave blank to detect from browser information or
   # use codes from 'languages.py'
@@ -476,6 +476,24 @@ engines:
   - name: arxiv
     engine: arxiv
     shortcut: arx
+
+  - name: avalw
+    engine: json_engine
+    shortcut: av
+    categories: general
+    paging: true
+    search_url: https://avalw.org/api/search?q={query}&page={pageno}&limit=10&tbm=all
+    results_query: results
+    url_query: url
+    title_query: title
+    content_query: snippet
+    thumbnail: image_url
+    disabled: true
+    inactive: true
+    about:
+      website: https://avalw.com
+      description: "Search engine from the Romanian news company AVALW S.R.L."
+      results: JSON
 
   - name: ayo
     engine: xpath
@@ -1443,6 +1461,12 @@ engines:
       description: "Demo index of Kavunka, a statistical search engine"
       results: HTML
 
+  - name: keenable
+    engine: keenable
+    shortcut: keen
+    disabled: true
+    inactive: true
+
   - name: kozmonavt
     engine: xpath
     search_url: https://kozmonavt.su/s?q={query}
@@ -1998,41 +2022,6 @@ engines:
     shortcut: poc
     disabled: true
 
-  - name: presearch
-    engine: presearch
-    search_type: search
-    categories: [general, web]
-    shortcut: ps
-    timeout: 4.0
-    disabled: true
-
-  - name: presearch images
-    engine: presearch
-    network: presearch
-    search_type: images
-    categories: [images, web]
-    timeout: 4.0
-    shortcut: psimg
-    disabled: true
-
-  - name: presearch videos
-    engine: presearch
-    network: presearch
-    search_type: videos
-    categories: [general, web]
-    timeout: 4.0
-    shortcut: psvid
-    disabled: true
-
-  - name: presearch news
-    engine: presearch
-    network: presearch
-    search_type: news
-    categories: [news, web]
-    timeout: 4.0
-    shortcut: psnews
-    disabled: true
-
   - name: pub.dev
     engine: xpath
     shortcut: pd
@@ -2157,12 +2146,6 @@ engines:
       use_official_api: false
       require_api_key: false
       results: JSON
-
-  - name: reddit
-    engine: reddit
-    shortcut: re
-    page_size: 25
-    disabled: true
 
   - name: reuters
     engine: reuters
@@ -3277,6 +3260,14 @@ engines:
   #   categories: [general, web]
   #   brave_category: goggles
   #   Goggles: # required! This should be a URL ending in .goggle
+
+  - name: exaapi
+    engine: exaapi
+    shortcut: exa
+    api_key: ""
+    search_type: auto
+    content_mode: highlights
+    inactive: true
 
   - name: lib.rs
     shortcut: lrs
