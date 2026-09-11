@@ -37,21 +37,17 @@ about = {
 }
 
 categories = []
-safeseach = True
+safesearch = True
 
 base_url = "https://luxxle.com"
 
 luxxle_categ = "search"
 """Supported categories: "search", "news", "images", "videos"."""
 
-# otherwise all requests get blocked (http2-fingerprinted probably)
-enable_http2 = False
-
-
 safe_search_map = {0: "Off", 1: "Moderate", 2: "Strict"}
 
 
-def init(_):
+def setup(_: dict[str, t.Any]) -> bool | None:
     if luxxle_categ not in ("search", "images", "videos", "news"):
         raise ValueError("invalid luxxle category: %s" % luxxle_categ)
 

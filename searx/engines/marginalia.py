@@ -10,7 +10,7 @@ Lofgren .
 .. _marginalia filters:
 
 Marginalia Filters
-=================
+==================
 
 Custom filters enable server-side customization of Marginalia search results.
 Filter definitions are written in XML and scoped to an API key.  Filters can
@@ -82,7 +82,7 @@ api_key = None
    https://about.marginalia-search.com/article/api/
 
 """
-filter_name: str | None = None
+filter_name: str = ""
 """The name of the custom filter to apply to each search."""
 
 
@@ -164,7 +164,7 @@ def response(resp: SXNG_Response):
     return res
 
 
-def init(_: dict[str, t.Any]):
+def setup(_: dict[str, t.Any]) -> bool:
 
     if not api_key:
         logger.error("missing api_key: see https://about.marginalia-search.com/article/api")

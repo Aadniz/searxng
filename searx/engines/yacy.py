@@ -52,13 +52,13 @@ Implementations
 """
 # pylint: disable=fixme
 
-
+import typing as t
 import random
 from json import loads
 from urllib.parse import urlencode
 from dateutil import parser
 
-from httpx import DigestAuth
+from curl_cffi import CurlOpt
 
 from searx.utils import html_to_text
 
@@ -102,7 +102,7 @@ selected randomly.
 """
 
 
-def init(_):
+def setup(_: dict[str, t.Any]) -> bool | None:
     valid_types = [
         'text',
         'image',
@@ -141,7 +141,10 @@ def request(query, params):
     params["url"] = f"{_base_url()}/yacysearch.json?{urlencode(args)}"
 
     if http_digest_auth_user and http_digest_auth_pass:
-        params['auth'] = DigestAuth(http_digest_auth_user, http_digest_auth_pass)
+        params['curl_options'] = {
+            CurlOpt.HTTPAUTH: 2,  # CURLAUTH_DIGEST
+            CurlOpt.USERPWD: f"{http_digest_auth_user}:{http_digest_auth_pass}",
+        }
 
     return params
 
